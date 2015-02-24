@@ -1,0 +1,41 @@
+.like-icon{
+     position:relative; 
+     width:100px; 
+     height:90px;
+     margin-top:10px; /* leave some space above */
+}
+.like-icon:before{
+    position: absolute; 
+    content: ""; 
+    left: 50px; 
+    top: 0; 
+    width: 52px; 
+    height: 80px; 
+    background: red; /* assign a nice red color */
+    border-radius: 50px 50px 0 0; /* make the top edge round */
+
+    -webkit-transform: rotate(-45deg); /* 45 degrees rotation counter clockwise */
+       -moz-transform: rotate(-45deg); 
+        -ms-transform: rotate(-45deg); 
+         -o-transform: rotate(-45deg); 
+            transform: rotate(-45deg); 
+    -webkit-transform-origin: 0 100%; /* Rotate it around the bottom-left corner */
+       -moz-transform-origin: 0 100%; 
+        -ms-transform-origin: 0 100%; 
+         -o-transform-origin: 0 100%; 
+            transform-origin: 0 100%;
+}
+
+.like-icon:after { 
+    left: 0; /* placing the right part properly */
+    -webkit-transform: rotate(45deg); /* rotating 45 degrees clockwise */
+       -moz-transform: rotate(45deg); 
+        -ms-transform: rotate(45deg); 
+         -o-transform: rotate(45deg); 
+            transform: rotate(45deg); 
+    -webkit-transform-origin: 100% 100%; /* rotation is around bottom-right corner this time */
+       -moz-transform-origin: 100% 100%; 
+        -ms-transform-origin: 100% 100%; 
+         -o-transform-origin: 100% 100%; 
+            transform-origin :100% 100%; 
+} 

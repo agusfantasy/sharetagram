@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+
+	<url>
+	  <loc>http://sharetagram.com/</loc>
+	</url>
+	<url>
+	  <loc>http://sharetagram.com/about</loc>
+	</url>
+	<url>
+	  <loc>http://sharetagram.com/privacy</loc>
+	</url>
+	<url>
+	  <loc>http://sharetagram.com/tos</loc>
+	</url>
+	<url>
+	  <loc>http://sharetagram.com/popular</loc>
+	</url>
+	<url>
+	  <loc>http://sharetagram.com/search</loc>
+	</url>
+	<url>
+	  <loc>http://sharetagram.com/contest</loc>
+	</url>
+	<url>
+	  <loc>http://sharetagram.com/contest/features</loc>
+	</url>
+	<url>
+	  <loc>http://sharetagram.com/contest/register</loc>
+	</url>
+	<url>
+	  <loc>http://sharetagram.com/contest/q/lanscapeindo</loc>
+	</url>
+</urlset>
