@@ -5,7 +5,7 @@ class Site extends CI_Controller
 	public function __construct()
     {
 		parent::__construct();
-		$this->load->model('mod_instagram','M');
+		$this->load->model('InstagramModel','model');
 	}
 
     public function index()

@@ -2,17 +2,12 @@
 
 class Search extends CI_Controller
 {
-    private $user_self_id;
-
     public function __construct()
     {
         parent::__construct();
 
-        $this->load->model('mod_instagram','M');
-
-        if ($this->session->userdata('instagram-user-id') != '') {
-            $this->user_self_id = $this->session->userdata('instagram-user-id');
-        }
+        $this->load->model('InstagramModel','model');
+        $this->model->setToken(instagram_token());
     }
 
     public function index()
@@ -42,9 +37,8 @@ class Search extends CI_Controller
             redirect('index404');
         }
 
-        $tags_search = $this->M->tagSearch($keyword);
-        $users_search = $this->M->userSearch($keyword);
-
+        $tags_search = $this->model->tagSearch($keyword);
+        $users_search = $this->model->userSearch($keyword);
         if  (!$tags_search && !$users_search) {
             redirect('api?url=search/'.urldecode($keyword));
         }

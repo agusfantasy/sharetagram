@@ -4,14 +4,12 @@ include "configuration.php";
 
 class User extends CI_Controller
 {
-    private $model;
-
 	public function __construct()
     {
 		parent::__construct();
-        $this->load->model('mod_instagram','M');
-        $this->M->setToken(instagram_token());
-        $this->model = $this->M;
+
+        $this->load->model('InstagramModel','model');
+        $this->model->setToken(instagram_token());
 	}
 
     public function index($id)
@@ -49,8 +47,6 @@ class User extends CI_Controller
         $data['meta_description'] = "{$user->data->full_name} Instagram Photo feed";
         $data['meta_keywords'] = "Instagram, IG, web, viewer, stats, photo, video, Facebook";
 
-        //$data['user_recent'] =
-
         $data['content'] = 'user/index';
         $this->load->view('layout/dashboard_view', $data);
 
@@ -58,8 +54,8 @@ class User extends CI_Controller
 
     public function recent()
     {
-        $user_id = $this->input->get('user_id');
-        $max_id = $this->input->get('max_id');
+        $user_id = get('user_id');
+        $max_id = get('max_id');
 
         $query = $this->model->getUserRecent($user_id, $max_id);
 
@@ -71,33 +67,53 @@ class User extends CI_Controller
             } else {
                 $response['alert'] = 'success';
                 $response['code'] = $query->meta->code;
-                $response['max_id'] =  $query->pagination->next_max_id;
 
-                foreach ($query->data as $k => $row) {
-                    $obj = new stdClass();
-                    $obj->id = $row->id;
-                    $obj->type = $row->type;
-
-                    $obj->has_video = '';
-                    if ($obj->type == 'video') {
-                        $obj->has_video =  '<div class="has-video"><div class="play"></div></div>';
-                    }
-
-                    $obj->user_id = $row->user->id;
-                    $obj->user_name = substr($row->user->username,0,21);
-                    $obj->image = $row->images->thumbnail->url;
-                    $obj->created_time = humanTiming($row->created_time);
-                    $obj->likes_count = $row->likes->count;
-                    $obj->comments_count = $row->comments->count;
-                    $obj->liked = false;
-
-                    $result[] = $obj;
+                $response['max_id'] = '';
+                if (property_exists($query->pagination,'next_max_id')) {
+                    $response['max_id'] =  $query->pagination->next_max_id;
                 }
-                $response['data'] = $result;
+
+                $response['data'] = '';
+                if (!empty($query->data)) {
+                    foreach ($query->data as $k => $row) {
+                        $obj = new stdClass();
+                        $obj->id = $row->id;
+                        $obj->type = $row->type;
+
+                        $obj->has_video = '';
+                        if ($obj->type == 'video') {
+                            $obj->has_video =  '<div class="has-video"><div class="play"></div></div>';
+                        }
+
+                        $obj->user_id = $row->user->id;
+                        $obj->user_name = substr($row->user->username,0,21);
+                        $obj->image = $row->images->thumbnail->url;
+                        $obj->created_time = humanTiming($row->created_time);
+                        $obj->likes_count = $row->likes->count;
+                        $obj->comments_count = $row->comments->count;
+                        $obj->liked = false;
+
+                        $result[] = $obj;
+                    }
+                    $response['data'] = $result;
+                }
             }
         }
 
         echo json_encode($response);
+    }
+
+
+    public function followers($user_id)
+    {
+        $result = $this->model->getFollowers($user_id);
+        pr($result); die();
+    }
+
+    public function followings($user_id)
+    {
+        $result = $this->model->getFollowings($user_id);
+        pr($result); die();
     }
 
 	public function feed()

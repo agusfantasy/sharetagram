@@ -43,9 +43,6 @@
 		<?php else: ?>
 		<link href="<?php echo asset_path(); ?>css/style.css" rel="stylesheet" type="text/css" />
 	<?php endif ?>
-
-
-
 </head>
 
 <body>

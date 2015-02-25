@@ -2,7 +2,7 @@
         <h1>Sharetagram is Instagram web viewer </h1>
         <form>
             <div class="form-group" >
-                <input class="form-control" id="home-keyword" maxlength="20" type="text" placeholder="Search for users or hastags">
+                <input class="form-control" id="home-keyword" maxlength="100" type="text" placeholder="Search for users or hastags">
                 <button id="home-search-btn">
                     <span class="glyphicon glyphicon-search"></span>
                 </button>

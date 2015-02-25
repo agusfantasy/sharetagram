@@ -27,7 +27,7 @@
 
                 ?>
                 <div class="form-group has-feedback">
-                    <input maxlength="20" type="text" name="keyword"
+                    <input maxlength="100" type="text" name="keyword"
                            class="form-control" id="keyword"
                            value="<?php echo isset($value)?$value:"";?>" onkeypress="return pressEnter(event)" placeholder="Search for users or hastags">
                     <button id="nav-search-btn" class="nav-search-btn">

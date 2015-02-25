@@ -118,4 +118,14 @@ function instagram_token(){
     $CI =getCI();
     return $CI->config->item('instagram_token');
 }
+
+function get($str){
+    $CI =getCI();
+    return $CI->input->get($str);
+}
+
+function post($str){
+    $CI =getCI();
+    return $CI->input->post($str);
+}
 ?>

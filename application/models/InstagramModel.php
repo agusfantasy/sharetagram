@@ -70,20 +70,30 @@ class InstagramModel extends CI_Model
 		return false;
 	}
 	
-	function getFollowers($user_id,$cursor=null){
-        $q = $this->instagram_api->userFollowedBy($user_id, $cursor);
-        return $q;
+	public function getFollowers($user_id, $cursor = null)
+    {
+        $query = $this->instagram_api->userFollowedBy($user_id,$cursor);
 
+        if (!$query || property_exists($query, 'code')) {
+            return false;
+        }
+
+        if ($query->meta->code == 200) {
+            return $query;
+        }
 	}
 	
-	function getFollowings($user_id,$cursor=null){
-		if($user_id!=''){
-			$q = $this->instagram_api->userFollows($user_id,$cursor);
-			if($q->meta->code==200){
-				return $q;
-			}			
-		}
-		return FALSE;
+	public function getFollowings($user_id, $cursor = null)
+    {
+        $query = $this->instagram_api->userFollows($user_id,$cursor);
+
+        if (!$query || property_exists($query, 'code')) {
+            return false;
+        }
+
+		if ($query->meta->code == 200) {
+		    return $query;
+	    }
 	}
 	
 	function checkSelfLike($mid){
@@ -135,16 +145,12 @@ class InstagramModel extends CI_Model
 	public function getUser($id)
     {
         $query = $this->instagram_api->getUser($id);
-        return $query;
-        /*if (!$query || property_exists($query, 'code')) {
+
+        if (!$query || property_exists($query, 'code')) {
             return false;
         }
 
-		if($query->meta->code==200){
-			return $query;
-		}
-
-		return false;*/
+		return $query;
 	}
 	
 	public function getMedia($id)

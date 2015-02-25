@@ -64,10 +64,10 @@ $route['m/(:any)'] = "item/index/$1";
 // routes for user
 $route['user/(:num)/(:any)'] = "user/index/$1/$2";
 $route['user/recent'] = "user/recent";
-/*$route['user/(:num)/(:any)/followers'] = "user/fol/ers/$1";
-$route['user/(:num)/(:any)/followings'] = "user/fol/ings/$1";
+$route['followers/(:num)/(:any)'] = "user/followers/$1";
+$route['followings/(:num)/(:any)'] = "user/followings/$1";
 $route['feed'] = "user/feed";
-$route['my_likes'] = "user/my_likes";*/
+$route['my_likes'] = "user/my_likes";
 $route['user/private'] = 'user/accountPrivate';
 
 // routes for info
