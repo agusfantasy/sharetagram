@@ -1226,6 +1226,10 @@ div.pagination span.disabled {
     padding:5px;
 }
 
+.follow li .wrapper{
+    padding-top:10px;
+}
+
 .thumb-cont .img {
     width: 152px;
     height: 152px;
@@ -1342,6 +1346,15 @@ div.pagination span.disabled {
 .likes a:hover {
     text-decoration: none;
 }
+.likes .count{
+    margin-left: 5px;
+    font-size: 16px;
+}
+
+.sprite{
+    display: block;
+    float: left;
+}
 
 .user {
     padding: 5px 0;
@@ -1373,6 +1386,11 @@ div.pagination span.disabled {
 .comment li {
     border-bottom: 1px solid #d6d6d6;
     padding: 5px 0;
+}
+
+.comment .count{
+    font-size: 16px;
+    margin-left: 5px;
 }
 
 .loading {
@@ -2053,87 +2071,6 @@ div.pagination span.disabled {
     overflow: hidden;
 }
 
-.contest-content {
-    width: 960px;
-    margin: 30px auto;
-}
-
-.contest-features {
-    width: 80%;
-    margin: 20px auto;
-}
-
-.contest-features h5 {
-    margin-bottom: 0;
-}
-
-.contest-features li {
-    padding: 5px 0;
-}
-
-.contest-list-wrapper {
-    margin-top: 15px;
-}
-
-.contest-list-wrapper li {
-    margin: 20px 0;
-    height: 356px;
-    overflow: auto;
-}
-
-.contest-list-photo {
-    float: left;
-    /* width:306px;
-    height:400px;
-    margin:10px;*/
-    padding: 10px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    -moz-box-shadow: 0 0 5px rgba(200, 200, 200, 0.5);
-    -webkit-box-shadow: 0 0 5px rgba(200, 200, 200, 0.5);
-    box-shadow: 0 0 5px rgba(200, 200, 200, 0.5);
-}
-
-.contest-list-photo .img img {
-    width: 306px;
-    height: auto;
-}
-
-.contest-list-photo .socmed {
-    width: 80px;
-    float: left;
-    text-align: left;
-    width: 150px;
-    margin-top: 2px;
-}
-
-.contest-list-photo .socmed span {
-    padding: 0 3px;
-    cursor: pointer;
-}
-
-.contest-list-photo .voted {
-    float: right;
-    text-align: right;
-}
-
-.contest-list-text {
-    float: right;
-    width: 600px;
-}
-
-.contest-list-text .photo-time {
-    width: 100%;
-    margin: -5px 0 10px 0;
-}
-
-.contest-list-text .caption {
-    line-height: 18px;
-    color: #333;
-    margin: 10px 0;
-    font-size: 13px;
-}
-
 .step-number-wrapper {
     float: left;
     border: 1px solid #3B96D4;
@@ -2224,7 +2161,7 @@ div.pagination span.disabled {
     }
 
     .thumb-cont li .wrapper {
-        padding: 0px;
+        padding: 5px 0;
     }
 
     .thumb-cont .img {
@@ -2276,5 +2213,4 @@ div.pagination span.disabled {
     .user-detail-action .follow{
         padding: 12px;
     }
-
 }

@@ -5,7 +5,7 @@
     <div class="user-detail-profil-info">
         <b><?php echo $user->data->username ?></b><br>
         <?php echo $user->data->full_name ?>
-        <p> <?php echo parse_smileys($user->data->bio , base_url()."images/smileys/") ?> </p>
+        <p> <?php echo $user->data->bio ?> </p>
         <a target="_blank" title="<?php echo $user->data->website ?>"
            href="<?php echo $user->data->website ?>"><?php echo $user->data->website ?></a>
     </div>
@@ -29,12 +29,12 @@
     </a>
 
     <a class="btn btn-default"
-       href="<?php echo "/followings/{$user->data->id}/{$user->data->username}"; ?>">
+       href="<?php echo "/user/{$user->data->id}/{$user->data->username}/followings"; ?>">
         <b> <?php echo $user->data->counts->follows; ?> </b> <br> followings
     </a>
 
     <a class="btn btn-default"
-       href="<?php echo "/followers/{$user->data->id}/{$user->data->username}"; ?> ">
+       href="<?php echo "/user/{$user->data->id}/{$user->data->username}/followers"; ?> ">
         <b> <?php echo $user->data->counts->followed_by; ?> </b> <br> followers
     </a>
 </div>

@@ -47,14 +47,13 @@ class User extends CI_Controller
         $data['meta_description'] = "{$user->data->full_name} Instagram Photo feed";
         $data['meta_keywords'] = "Instagram, IG, web, viewer, stats, photo, video, Facebook";
 
-        $data['content'] = 'user/index';
+        $data['content'] = 'user/user';
         $this->load->view('layout/dashboard_view', $data);
 
     }
 
-    public function recent()
+    public function recent($user_id)
     {
-        $user_id = get('user_id');
         $max_id = get('max_id');
 
         $query = $this->model->getUserRecent($user_id, $max_id);
@@ -75,14 +74,18 @@ class User extends CI_Controller
 
                 $response['data'] = '';
                 if (!empty($query->data)) {
+
+                    $response['count_per_load'] = count($query->data);
+
                     foreach ($query->data as $k => $row) {
                         $obj = new stdClass();
                         $obj->id = $row->id;
                         $obj->type = $row->type;
 
-                        $obj->has_video = '';
                         if ($obj->type == 'video') {
-                            $obj->has_video =  '<div class="has-video"><div class="play"></div></div>';
+                            $obj->has_video =  'block';
+                        } else {
+                            $obj->has_video = 'none';
                         }
 
                         $obj->user_id = $row->user->id;
@@ -103,17 +106,34 @@ class User extends CI_Controller
         echo json_encode($response);
     }
 
-
     public function followers($user_id)
     {
-        $result = $this->model->getFollowers($user_id);
-        pr($result); die();
+        $query = $this->model->getFollowers($user_id, get('next_cursor'));
+
+        $response['next_cursor'] = '';
+        if (property_exists($query->pagination,'next_cursor')) {
+            $response['next_cursor'] =  $query->pagination->next_cursor;
+        }
+
+        $response['count_per_load'] = count($query->data);
+        $response['data'] = $query->data;
+
+        echo json_encode($response);
     }
 
     public function followings($user_id)
     {
-        $result = $this->model->getFollowings($user_id);
-        pr($result); die();
+        $query = $this->model->getFollowings($user_id, get('next_cursor'));
+
+        $response['next_cursor'] = '';
+        if (property_exists($query->pagination,'next_cursor')) {
+            $response['next_cursor'] =  $query->pagination->next_cursor;
+        }
+
+        $response['count_per_load'] = count($query->data);
+        $response['data'] = $query->data;
+
+        echo json_encode($response);
     }
 
 	public function feed()
@@ -166,38 +186,6 @@ class User extends CI_Controller
 		}	
 	}
 	
-	public function recentlama()
-    {
-		// Get the user id
-		$data['user_id'] = $user_id = $this->input->get('user_id');
-		$data['user_self_id'] = $this->user_self_id;
-		
-		if(!$this->input->get('more')){
-			$view = 'user/recent';
-			$max_id = '';	
-		}
-		else if($this->input->get('more')==1){
-			$view = 'user/recent_more';
-			$max_id = $this->input->get('max_id');
-		}			
-		
-		// instagram api lib getUserRecent
-		$user_recent_data = $this->M->getUserRecent($user_id,$max_id);
-		//pr($user_recent_data);		
-		if($user_recent_data->meta->code == 200){
-			if(isset($user_recent_data->pagination->next_max_id)){
-				$data['next'] = $user_recent_data->pagination->next_max_id;		
-			}			
-			// get view : full or in frame / load ajax
-			$data['recent_data'] = $user_recent_data->data;				
-		}
-		else{
-			echo 'Sorry, an error occurred loading this content.<br>(Instagram could not be reached)';			
-		}	
-		
-		$this->load->view($view,$data);
-	}
-
 	//post follow
 	public function post_follow()
 	{

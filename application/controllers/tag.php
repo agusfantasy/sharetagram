@@ -2,16 +2,11 @@
 
 class Tag extends CI_Controller
 {
-    private $user_self_id;
-
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('mod_instagram','mod');
-
-        if (!empty($this->session->userdata('instagram-user-id'))) {
-            $this->user_self_id = $this->session->userdata('instagram-user-id');
-        }
+        $this->load->model('InstagramModel','instagram');
+        $this->instagram->setToken(instagram_token());
     }
 
     /*	get photos/videos by tag */
@@ -26,13 +21,13 @@ class Tag extends CI_Controller
 
         $data['title'] = "#$tag";
 
-        $data['content'] = 'tag/hashtag';
+        $data['content'] = 'tag/tag_index';
         $this->load->view('layout/dashboard_view', $data);
     }
 
-    public function more()
+    public function more($tag)
     {
-        $query = $this->mod->getTag($this->input->get('tag'), $this->input->get('max_id'));
+        $query = $this->instagram->getTag($tag, get('max_id'));
 
         if (!$query) {
             $response['alert'] = 'fail';
@@ -49,9 +44,10 @@ class Tag extends CI_Controller
                     $obj->id = $row->id;
                     $obj->type = $row->type;
 
-                    $obj->has_video = '';
                     if ($obj->type == 'video') {
-                        $obj->has_video =  '<div class="has-video"><div class="play"></div></div>';
+                        $obj->has_video =  'block';
+                    } else {
+                        $obj->has_video = 'none';
                     }
 
                     $obj->user_id = $row->user->id;

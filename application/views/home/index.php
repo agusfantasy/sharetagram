@@ -33,10 +33,6 @@
             <p>Like photos<br>&amp; videos</p>
         </div>
         <div class="col-xs-6 col-md-2">
-            <div class="values-comment"></div>
-            <p>Post<br>comments</p>
-        </div>
-        <div class="col-xs-6 col-md-2">
             <div class="values-star"></div>
             <p>Popular photos<br>&amp; videos</p>
         </div>

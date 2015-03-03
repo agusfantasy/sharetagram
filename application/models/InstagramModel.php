@@ -73,14 +73,10 @@ class InstagramModel extends CI_Model
 	public function getFollowers($user_id, $cursor = null)
     {
         $query = $this->instagram_api->userFollowedBy($user_id,$cursor);
-
         if (!$query || property_exists($query, 'code')) {
             return false;
         }
-
-        if ($query->meta->code == 200) {
-            return $query;
-        }
+        return $query;
 	}
 	
 	public function getFollowings($user_id, $cursor = null)
@@ -161,11 +157,7 @@ class InstagramModel extends CI_Model
             return false;
         }
 
-		if ($query->meta->code === 200) {
-            return $query;
-		}
-
-		return false;
+        return $query;
 	}
 
     public function tagSearch($keyword)

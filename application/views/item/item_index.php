@@ -2,56 +2,68 @@
     <div class="row">
         <div class="left col-md-8">
             <div class="item-media">
-                <div class="item-media-mg"><?php echo $img_video; ?></div>
+                <div class="item-media-mg">
+                    <?php if ($type == 'image') : ?>
+                        <img class="img-responsive" src="<?php echo $media->data->images->standard_resolution->url?>">
+                    <?php else : ?>
+                        <video controls>
+                            <source src="<?php echo $media->data->videos->standard_resolution->url ?>" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    <?php endif ?>
+                </div>
             </div>
-            <div class="item-caption"><?php echo $caption;?></div>
+
+            <div class="item-caption"><?php echo $caption ?></div>
+
             <div class="item-time"><?php echo $created_time ?></div>
+            <div class="item-location"><?php echo $location ?></div>
+
             <div class="item-share">
                 <div class="fb-icon-32" id="fb-share"></div>
                 <div class="twitter-icon-32" id="twitter-share" alt="Share to Twitter"> </div>
                 <div class="gplus-32" onclick="googlePlus()" ></div>
                 <div class="tumblr-32" onclick="tumblrShare()"></div>
             </div>
+
             <div class="clr"></div>
         </div>
 
         <div class="right col-md-4">
-
             <div class="user">
-                <span class="img"><img alt="<?php echo $username; ?>" src="<?php echo $user_pp; ?>"></span>
+                <span class="img">
+                    <img alt="<?php echo $user->username; ?>"
+                         src="<?php echo $user->profile_picture ?>">
+                </span>
 
                 <div class="name">
                     <h4 style="margin:0">
-                        <a title="<?php echo $username; ?>"
-                           href="<?php echo site_url("user/$user_id/$username") ?>"><?php echo $username; ?></a>
+                        <a title="<?php echo $user->username; ?>"
+                           href="<?php echo site_url("user/$user->id/$user->username") ?>"><?php echo $user->username; ?></a>
                     </h4>
-                    <?php echo $user_fullname ?>
+                    <?php echo $user->full_name ?>
                 </div>
                 <div class="clr"></div>
             </div>
 
             <div class="tags">
                 <div class="row">
-                    <div class="col-md-1">
-                        <div class="blue-tag-24"></div>
-                    </div>
-                    <div class="col-md-10">
-                        <ul>
-                            <?php foreach($tags as $row): ?>
-                                <li><a href='<?php echo site_url("tag/$row")?>'><?php echo $row ?></a></li>
-                            <?php endforeach ?>
-                        </ul>
-                    </div>
+                    <span class="blue-tag-24 sprite"></span>
+                    <ul>
+                        <?php foreach($tags as $k => $row): ?>
+                            <li><a href='<?php echo site_url("tag/$row")?>'><?php echo $row ?></a></li>
+                        <?php endforeach ?>
+                    </ul>
                 </div>
                 <div class="clr"></div>
             </div>
 
             <div class="likes">
-                <div id="click_like" data-act="" class="icon-like"  ></div>
-                <span id="like-count" style="margin-left: 14px; font-size: 16px;"><?php echo $likes_count?> </span> Like
+                <i class="fa fa-heart fa-lg"></i>
+                <span id="like-count" class="count" ><b><?php echo $likes->count ?></b> Like</span>
                 <div class="row">
-                    <ul class="col-md-11 col-md-offset-1">
-                        <?php foreach ($likes_data as $row): ?>
+                    <ul>
+                        <?php foreach ($likes->data as $row): ?>
                             <li id="<?php echo $row->id; ?>">
                                 <a href="<?php echo site_url("user/$row->id/$row->username") ?>">
                                     <?php echo $row->username ?>
@@ -67,12 +79,12 @@
 
             <div class="comment">
 
-                <div class="comment-sp" style="float: left; margin-top: 5px;"></div>
-                <div style="font-size: 16px; margin-left: 20px;"><?php echo $comments_count?>  Comment </div>
+                <span class="comment-sp sprite"></span>
+                <div class="count"><b><?php echo $comments->count?></b>  Comment </div>
 
                 <ul>
                     <?php $n = 0; ?>
-                    <?php foreach($comments_data as $row): ?>
+                    <?php foreach($comments->data as $row): ?>
                         <?php  $n++; ?>
                         <?php if ($n<6): ?>
                             <li>
@@ -97,7 +109,7 @@
                     <?php endforeach ?>
                 </ul>
 
-                <?php if ($comments_count > 5): ?>
+                <?php if ($comments->count > 5): ?>
                     <div class="link-click-all" id="view-comment" > > View All </div>
                 <?php endif ?>
 
@@ -107,4 +119,4 @@
 	<div class="clr"></div>
 </div>
 
-<?php $this->load->view('my_facebook_js'); ?>
+<?php //$this->load->view('my_facebook_js'); ?>

@@ -6,7 +6,7 @@ class Popular extends CI_Controller
     {
         parent::__construct();
 
-        $this->load->model('mod_instagram', 'M');
+        $this->load->model('InstagramModel', 'M');
     }
 
     public function index()

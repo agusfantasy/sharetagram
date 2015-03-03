@@ -1,7 +1,6 @@
 <div class="container">
     <div class="col-lg-4 left">
         <a title="About Us" href="<?php echo site_url('about')?>"> About</a>
-        <a title="Contact Us"  href="<?php echo site_url('contact')?>"> Contact</a>
         <a title="Privacy Policy" href="<?php echo site_url('privacy')?>">Privacy</a>
         <a title="Terms of Service" href="<?php echo site_url('tos')?>" href="#">Terms</a>
 	</div>

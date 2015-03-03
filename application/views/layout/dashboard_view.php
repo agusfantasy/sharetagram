@@ -38,7 +38,7 @@
     <link href="<?php echo asset_path(); ?>font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
     <link href="<?php echo asset_path(); ?>jquery-ui-1.10.4.custom/css/redmond/jquery-ui-1.10.4.custom.min.css" rel="stylesheet">
 
-	<?php if (ENVIRONMENT=='production'): ?>
+	<?php if (ENVIRONMENT == 'production'): ?>
 		<link href="<?php echo asset_path(); ?>css/style.min.css" rel="stylesheet" type="text/css" />
 		<?php else: ?>
 		<link href="<?php echo asset_path(); ?>css/style.css" rel="stylesheet" type="text/css" />
@@ -66,8 +66,6 @@
 	<div class="clr"></div>
 	<footer><?php $this->load->view('layout/footer_view'); ?></footer>
 
-    <!--<script src="<?php echo asset_path(); ?>js/jquery-2.1.1.min.js" type="text/javascript"></script>-->
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
@@ -75,7 +73,6 @@
 
     <script src="<?php echo asset_path(); ?>bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
     <script src="<?php echo asset_path(); ?>jquery_validation/dist/jquery.validate.min.js"></script>
-    <script src="<?php echo asset_path(); ?>jscroll/jquery.jscroll.min.js"></script>
 
     <script type="text/javascript" src="<?php echo asset_path(); ?>jquery.json2html/json2html.js"></script>
     <script type="text/javascript" src="<?php echo asset_path(); ?>jquery.json2html/jquery.json2html.js"></script>
@@ -84,5 +81,13 @@
 
     <script src="<?php echo asset_path(); ?>js/apps/config.js"></script>
     <script src="<?php echo asset_path(); ?>js/apps/index.js"></script>
+
+    <script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+    <script src="<?php echo asset_path(); ?>angular/module/ng-infinite-scroll.min.js"></script>
+
+    <script src="<?php echo asset_path(); ?>angular/myApp.js"></script>
+    <script src="<?php echo asset_path(); ?>angular/userFollowController.js"></script>
+    <script src="<?php echo asset_path(); ?>angular/userRecentController.js"></script>
+    <script src="<?php echo asset_path(); ?>angular/tagController.js"></script>
 </body>
 </html>

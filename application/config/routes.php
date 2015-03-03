@@ -56,16 +56,18 @@ $route['search/(:any)'] = "search/q/$1";
 $route['search'] = "search/index";
 
 // routes for tag
-$route['tag_more'] = "tag/more";
+$route['tag_more/(:any)'] = "tag/more/$1";
 $route['tag/(:any)'] = "tag/index/$1";
-$route['m/(:any)'] = "item/index/$1";
 
+//routes for item
+$route['m/(:any)'] = "item/index/$1";
+$route['m/(:any)/likes'] = "item/userLikes/$1";
 
 // routes for user
 $route['user/(:num)/(:any)'] = "user/index/$1/$2";
-$route['user/recent'] = "user/recent";
-$route['followers/(:num)/(:any)'] = "user/followers/$1";
-$route['followings/(:num)/(:any)'] = "user/followings/$1";
+$route['user/recent/(:num)'] = "user/recent/$1";
+$route['followers/(:num)'] = "user/followers/$1";
+$route['followings/(:num)'] = "user/followings/$1";
 $route['feed'] = "user/feed";
 $route['my_likes'] = "user/my_likes";
 $route['user/private'] = 'user/accountPrivate';
@@ -76,6 +78,9 @@ $route['privacy'] = "info/privacy";
 $route['tos'] = "info/tos";
 $route['contact'] = "info/contact";
 $route['contact_post'] = "info/contact_post";
+
+// routes for admin
+$route['admin'] = "admin/ig/index";
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */
