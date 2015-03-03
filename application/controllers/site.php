@@ -48,14 +48,7 @@ class Site extends CI_Controller
 
 
 
-    public function get_comment()
-    {
-		$media_id = $this->input->get('mid');
-		$comment = $this->instagram_api->mediaComments($media_id);		
 
-		$data['comments_data'] = $comment->data;
-		$this->load->view('comment_list_v',$data);		
-	}
 
     public function post_comment()
     {

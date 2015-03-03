@@ -89,5 +89,6 @@
     <script src="<?php echo asset_path(); ?>angular/userFollowController.js"></script>
     <script src="<?php echo asset_path(); ?>angular/userRecentController.js"></script>
     <script src="<?php echo asset_path(); ?>angular/tagController.js"></script>
+    <script src="<?php echo asset_path(); ?>angular/itemController.js"></script>
 </body>
 </html>

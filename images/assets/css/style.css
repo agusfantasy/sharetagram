@@ -866,7 +866,7 @@ input[type=text] #keyword {
 }
 
 .link-click-all:hover {
-    text-decoration: underline;
+    opacity: 0.5;
 }
 
 .term {
@@ -1357,8 +1357,7 @@ div.pagination span.disabled {
 }
 
 .user {
-    padding: 5px 0;
-    border-top: 1px solid #EDEDEE;
+    padding-bottom: 5px;
     border-bottom: 1px solid #EDEDEE;
 }
 
@@ -2212,5 +2211,15 @@ div.pagination span.disabled {
     }
     .user-detail-action .follow{
         padding: 12px;
+    }
+
+    .item .row .left{
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .item .row .right{
+        padding-left: 0;
+        padding-right: 0;
     }
 }

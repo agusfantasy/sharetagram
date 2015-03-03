@@ -61,7 +61,8 @@ $route['tag/(:any)'] = "tag/index/$1";
 
 //routes for item
 $route['m/(:any)'] = "item/index/$1";
-$route['m/(:any)/likes'] = "item/userLikes/$1";
+$route['likes_media/(:any)'] = "item/userLikes/$1";
+$route['comments_media/(:any)'] = "item/comments/$1";
 
 // routes for user
 $route['user/(:num)/(:any)'] = "user/index/$1/$2";

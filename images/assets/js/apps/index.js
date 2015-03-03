@@ -1,3 +1,28 @@
+function facebookShare(){
+    window.open("https://www.facebook.com/sharer/sharer.php?u="+location.href, "Share instagram on Facebook","width=640,height=320");
+}
+
+function twitterShare(){
+    window.open("https://twitter.com/share?url="+location.href, "Share on Twitter","width=550,height=520");
+}
+
+function googlePlus(){
+    window.open('https://plus.google.com/share?url={'+location.href+'}','', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');
+    return false;
+}
+
+function tumblrShare(){
+    var itemCaption = $(".item-caption").html();
+    var itemImg = $(".item-media img").attr("src");
+
+    var photo = encodeURIComponent(itemImg);
+    var caption = encodeURIComponent(itemCaption);
+
+    var url = 'http://www.tumblr.com/share/photo?source='+photo+'&caption='+caption;
+    window.open(url, 'Share Instagram photo on Tumblr','menubar=no,toolbar=no ,resizable=yes,scrollbars=yes,height=500,width=700');
+    return false;
+}
+
 $(function () {
     var loading = $('#loading');
 

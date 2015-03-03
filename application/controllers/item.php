@@ -59,7 +59,25 @@ class Item extends CI_Controller
     {
         $query = $this->instagram->getMediaUserLikes($media_id);
 
-        echo json_encode($query->data);
+        echo json_encode($query);
     }
 
+    public function comments($media_id)
+    {
+        $comments = $this->instagram_api->mediaComments($media_id);
+
+        foreach($comments->data as $row) {
+            $obj = new stdClass();
+            $obj->id = $row->id;
+            $obj->created_time = humanTiming($row->created_time);
+            $obj->text  = $row->text;
+
+            $obj->from['id'] = $row->from->id;
+            $obj->from['username'] = substr($row->from->username,0,21);
+            $obj->from['profile_picture'] = $row->from->profile_picture;
+
+            $response[] = $obj;
+        }
+        echo json_encode($response);
+    }
 }

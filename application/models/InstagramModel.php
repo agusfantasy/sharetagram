@@ -62,9 +62,9 @@ class InstagramModel extends CI_Model
 	public function getMediaUserLikes($media_id)
     {
 		$media_likes = $this->instagram_api->mediaLikes($media_id);
-		if( $media_likes->meta->code == 200 ) {
+		if ($media_likes->meta->code == 200) {
 			if(is_array($media_likes->data) && count($media_likes->data) > 0){
-                return $media_likes;
+                return $media_likes->data;
 			}
 		}
 		return false;
@@ -201,7 +201,12 @@ class InstagramModel extends CI_Model
         return false;
     }
 
-
-
+    public function getMediaComments()
+    {
+        $query = $this->instagram_api->mediaComments($media_id);
+        if (!$query || property_exists($query, 'code')) {
+            return false;
+        }
+        return $query;
+    }
 }
-?>
