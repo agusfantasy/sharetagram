@@ -104,15 +104,17 @@
                                             <img alt="<?php echo $row->from->username ?>" width="30" height="auto" src="<?php echo $row->from->profile_picture; ?>">
                                         </div>
                                         <div class="pull-right" style="width: 88%;">
-                                            <span class="pull-left">
-                                                <a title="<?php echo $row->from->username; ?>"
-                                                   href="<?php echo "/user/{$row->from->id}/{$row->from->username}" ?>">
-                                                    <?php echo $row->from->username ?>
-                                                </a>
-                                            </span>
-                                            <span class="comment-time"><?php echo humanTiming($row->created_time) ?></span>
-                                            <br>
-                                            <?php echo $row->text; ?>
+                                            <div>
+                                                <span class="pull-left">
+                                                    <a title="<?php echo $row->from->username; ?>"
+                                                       href="<?php echo "/user/{$row->from->id}/{$row->from->username}" ?>">
+                                                        <?php echo $row->from->username ?>
+                                                    </a>
+                                                </span>
+                                                <span class="comment-time pull-right"><?php echo humanTiming($row->created_time) ?></span>
+                                                <div class="clr"></div>
+                                            </div>
+                                            <div class="text"><?php echo $row->text; ?></div>
                                         </div>
                                     </div>
                                     <div class="clr"></div>
@@ -135,14 +137,16 @@
                                     <img alt="" width="30" height="auto" src="{{ row.from.profile_picture }}">
                                 </div>
                                 <div class="pull-right" style="width: 88%;">
-                                    <span class="pull-left">
-                                        <a title="{{ row.from.username }}" href="/user/{{ row.from.id }}/{{ row.from.username }}">
-                                            {{ row.from.username }}
-                                        </a>
-                                    </span>
-                                    <span class="comment-time">{{ row.created_time }}</span>
-                                    <br>
-                                    {{ row.text }}
+                                    <div>
+                                        <span class="pull-left">
+                                            <a title="{{ row.from.username }}" href="/user/{{ row.from.id }}/{{ row.from.username }}">
+                                                {{ row.from.username }}
+                                            </a>
+                                        </span>
+                                        <span class="comment-time pull-right">{{ row.created_time }}</span>
+                                        <div class="clr"></div>
+                                    </div>
+                                    <div class="text emoticon"> {{ row.text }} </div>
                                 </div>
                             </div>
                             <div class="clr"></div>

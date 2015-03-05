@@ -56,13 +56,14 @@
 		$container = 'contest-container';
 	} else {
 		$container = 'page-container';
-		if (!empty($this->session->userdata('instagram-user-id'))) {
+		if (!empty(session('instagram-user-id'))) {
 			$style = 'style="padding-top:0;margin-top:10px;"';
 			$this->load->view('user/header');
 		}
 	}
 	?>
-	<div <?php echo $style; ?> class="<?php echo $container;?>"><?php $this->load->view($content); ?></div>
+
+	<div <?php  echo $style; ?> class="<?php  echo $container;?>"><?php $this->load->view($content); ?></div>
 	<div class="clr"></div>
 	<footer><?php $this->load->view('layout/footer_view'); ?></footer>
 
@@ -78,6 +79,8 @@
     <script type="text/javascript" src="<?php echo asset_path(); ?>jquery.json2html/jquery.json2html.js"></script>
 
     <script type="text/javascript" src="<?php echo asset_path(); ?>jquery-lazyload/jquery.lazyload.min.js"></script>
+
+    <script src="//twemoji.maxcdn.com/twemoji.min.js"></script>
 
     <script src="<?php echo asset_path(); ?>js/apps/config.js"></script>
     <script src="<?php echo asset_path(); ?>js/apps/index.js"></script>

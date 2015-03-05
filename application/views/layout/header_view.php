@@ -15,7 +15,6 @@
             <ul class="nav navbar-nav">
                 <li><a <?php if(ur(1)=='about'){echo "class='active'";} ?> href="<?php echo base_url()?>about">About</a></li>
                 <li><a <?php if(ur(1)=='popular'){echo "class='active'";} ?> href="<?php echo base_url()?>popular" >Popular</a></li>
-                <!--<li><a <?php if(ur(1)=='search'){echo "class='active'";} ?> href="<?php echo base_url()?>search">Search</a></li>-->
             </ul>
             <form class="navbar-form navbar-left" role="search">
                 <?php

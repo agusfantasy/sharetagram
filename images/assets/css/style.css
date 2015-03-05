@@ -1128,8 +1128,6 @@ input[type=text] #keyword {
 }
 
 .comment-time {
-    float: right;
-    display: inline-block;
     color: #BDBDBD;
     font-size: 13px;
 }
@@ -1323,6 +1321,11 @@ div.pagination span.disabled {
 
 .item .tags a:hover {
     text-decoration: none;
+}
+
+.item .comment .text {
+    word-wrap: break-word;
+    line-height: 1.2;
 }
 
 .likes {
@@ -2124,8 +2127,15 @@ div.pagination span.disabled {
 }
 .fa-heart {
     color: #7f7f7f;
+    cursor: pointer;
 }
 
+img.emoji {
+    height: 1em;
+    width: 1em;
+    margin: 0 .05em 0 .1em;
+    vertical-align: -0.1em;
+}
 
 @media (max-width : 360px) {
 
