@@ -1,5 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+use Emojione\Emojione;
+
 class Item extends CI_Controller
 {
     public function __construct()
@@ -30,7 +32,7 @@ class Item extends CI_Controller
 
         $data['caption'] = "";
         if (! is_null($media->data->caption) ) {
-            $data['caption'] = $media->data->caption->text;
+            $data['caption'] = Emojione::unicodeToImage($media->data->caption->text);
         }
 
         $data['user'] = $media->data->user;
@@ -38,6 +40,7 @@ class Item extends CI_Controller
         $data['tags'] = $media->data->tags;
         $data['comments'] = $media->data->comments;
         $data['likes'] = $media->data->likes;
+        $data['is_liked'] = $this->isLiked($media_id);
 
         $data['meta_title'] = "Instagram Photo by @{$data['user']->username} ({$data['user']->full_name}) | Sharetagram";
 
@@ -66,18 +69,29 @@ class Item extends CI_Controller
     {
         $comments = $this->instagram_api->mediaComments($media_id);
 
-        foreach($comments->data as $row) {
+        foreach ($comments->data as $row) {
             $obj = new stdClass();
             $obj->id = $row->id;
             $obj->created_time = humanTiming($row->created_time);
             $obj->text  = $row->text;
-
             $obj->from['id'] = $row->from->id;
             $obj->from['username'] = substr($row->from->username,0,21);
             $obj->from['profile_picture'] = $row->from->profile_picture;
 
             $response[] = $obj;
         }
+
         echo json_encode($response);
+    }
+
+    private function isLiked($media_id)
+    {
+        if (empty(session('ig-token'))) return false;
+
+        $liked = $this->instagram->isLiked(session('ig-id'), $media_id);
+        if (!$liked) {
+            return false;
+        }
+        return true;
     }
 }

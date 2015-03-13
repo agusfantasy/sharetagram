@@ -43,3 +43,13 @@ application/views/welcome_message.php
 application/views/errors/*
 index.php
 license.txt
+/vendor
+/node_modules
+/bootstrap
+/config_define.php
+/configuration.php
+/db/db.sql
+/db/info.sql
+/db/sharecom_gram.sql
+/db/user.sql
+/error_log

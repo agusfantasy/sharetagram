@@ -6,8 +6,8 @@ class Search extends CI_Controller
     {
         parent::__construct();
 
-        $this->load->model('InstagramModel','model');
-        $this->model->setToken(instagram_token());
+        $this->load->model('InstagramModel','instagram');
+        $this->instagram->setToken(instagram_token());
     }
 
     public function index()
@@ -23,7 +23,7 @@ class Search extends CI_Controller
 
     public function search_post()
     {
-        $keyword = ur(3);
+        $keyword = trim(ur(3));
         if (empty($keyword)) {
             redirect(site_url());
         }
@@ -37,21 +37,24 @@ class Search extends CI_Controller
             redirect('index404');
         }
 
-        $tags_search = $this->model->tagSearch($keyword);
-        $users_search = $this->model->userSearch($keyword);
-        if  (!$tags_search && !$users_search) {
+        $tags_search = $this->instagram->tagSearch($keyword);
+        $users_search = $this->instagram->userSearch($keyword);
+
+        if (!$tags_search && !$users_search) {
             redirect('api?url=search/'.urldecode($keyword));
         }
 
         $data['tags'] = $tags_search;
         $data['users'] = $users_search;
 
-        $data['meta_title'] = "Search Instagram for $keyword | Sharetagram";
+        $clean_keyword = urldecode($keyword);
+
+        $data['meta_title'] = "Search Instagram for {$clean_keyword} | Sharetagram";
         $data['meta_description'] = "Find all Instagram hashtags and users matching the search $keyword";
         $data['meta_keywords'] = "Instagram, IG, web, viewer, stats, photo, video, Facebook";
-        $data['meta_image'] = base_url() . 'images/logo_500.png';
+        $data['meta_image'] = 'static/images/logo_500.png';
 
-        $data['keyword'] = urldecode($keyword);
+        $data['keyword'] = $clean_keyword;
 
         $data['content'] = 'search/result';
         $this->load->view('layout/dashboard_view',$data);

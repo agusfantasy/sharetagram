@@ -1,5 +1,5 @@
 <?php
-
+require __DIR__.'/vendor/autoload.php';
 /*
  *---------------------------------------------------------------
  * APPLICATION ENVIRONMENT
@@ -47,6 +47,7 @@ if (defined('ENVIRONMENT'))
 	}
 }
 
+include "config_define.php";
 /*
  *---------------------------------------------------------------
  * SYSTEM FOLDER NAME

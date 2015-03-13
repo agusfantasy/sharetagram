@@ -8,10 +8,10 @@
 
     <div class="col-lg-4 right">
         <a title="Sharetagram on Facebook" href="https://www.facebook.com/pages/Sharetagram/891564730874319" target="_blank">
-            <img alt="Instagram on Facebook"  src="<?php echo base_url()?>images/facebook_circle_color-32.png">
+            <img alt="Instagram on Facebook"  src="/static/images/facebook_circle_color-32.png">
         </a>
         <a title="Sharetagram on Twitter" href="https://twitter.com/sharetagram" target="_blank">
-            <img alt="Instagram on Twitter" src="<?php echo base_url()?>images/twitter_circle-32.png">
+            <img alt="Instagram on Twitter" src="/static/images/twitter_circle-32.png">
         </a>
     </div>
 </div>

@@ -91,26 +91,22 @@ class InstagramModel extends CI_Model
 		    return $query;
 	    }
 	}
-	
-	function checkSelfLike($mid){
-		if($this->checkLoginStatus() && $this->getLikeListId($mid)){
-			if( in_array($this->user_self_id,$this->getLikeListId($mid)) ){
-				return TRUE;
-			}else{
-				return FALSE;
-			}	
+
+	public function isLiked($media_id, $self_id)
+    {
+		if( in_array($self_id, $this->getMediaUserLikes($media_id)) ) {
+			return true;
 		}
-		return FALSE;
+		return false;
 	}
 	
-	function userMediaLiked($max_like_id){
-		if($this->user_self_id!=''){
-			$q = $this->instagram_api->userMediaLiked($max_like_id);
-			if($q->meta->code==200){
-				return $q;
-			}			
-		}
-		return FALSE;	
+	public function getUserSelfLiked($max_like_id)
+    {
+	    $query = $this->instagram_api->userMediaLiked($max_like_id);
+        if (!$query && property_exists($query, 'code') && $q->meta->code !== 200) {
+            return false;
+        }
+		return $query;
 	}
 	
 	public function getTag($tag, $max_id = null, $min_id = null)
@@ -162,7 +158,6 @@ class InstagramModel extends CI_Model
 
     public function tagSearch($keyword)
     {
-        $keyword = urldecode($keyword) ;
         $result = $this->instagram_api->tagsSearch($keyword);
         if(!$result){
             return false;
@@ -175,7 +170,6 @@ class InstagramModel extends CI_Model
 
     public function userSearch($keyword)
     {
-        $keyword = urldecode($keyword) ;
         $result = $this->instagram_api->userSearch($keyword);
         if(!$result){
             return false;
@@ -194,10 +188,18 @@ class InstagramModel extends CI_Model
             return false;
         }
 
-        if($query->meta->code==200){
+        if ($query->meta->code == 200) {
             return $query;
         }
 
+        return false;
+    }
+
+    public function getUserFeed($max_id) {
+        $query  = $this->instagram_api->getUserFeed($max_id);
+        if (!$query && !property_exists($query, 'code') && $query->meta->code == 200) {
+            return $query;
+        }
         return false;
     }
 

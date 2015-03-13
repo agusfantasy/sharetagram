@@ -56,6 +56,12 @@ class Tag extends CI_Controller
                     $obj->created_time = humanTiming($row->created_time);
                     $obj->likes_count = $row->likes->count;
                     $obj->comments_count = $row->comments->count;
+                    $obj->liked = $this->isLiked($row->id);
+                    $obj->like_class = '';
+                    $obj->self_id = session('ig-id');
+                    if ($obj->liked) {
+                        $obj->like_class = 'liked';
+                    }
 
                     $result[] = $obj;
                 }
@@ -64,6 +70,17 @@ class Tag extends CI_Controller
         }
 
         echo json_encode($response);
+    }
+
+    private function isLiked($media_id)
+    {
+        if (empty(session('ig-token'))) return false;
+
+        $liked = $this->instagram->isLiked(session('ig-id'), $media_id);
+        if (!$liked) {
+            return false;
+        }
+        return true;
     }
 }
 

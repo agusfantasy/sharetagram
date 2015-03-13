@@ -35,11 +35,11 @@ class Auth extends CI_Controller
 			$auth_response = $this->instagram_api->authorize($_GET['code']);
 			
 			// Set up session variables containing some useful Instagram data
-			$this->session->set_userdata('instagram-token', $auth_response->access_token);
-			$this->session->set_userdata('instagram-username', $auth_response->user->username);
-			$this->session->set_userdata('instagram-profile-picture', $auth_response->user->profile_picture);
-			$this->session->set_userdata('instagram-user-id', $auth_response->user->id);
-			$this->session->set_userdata('instagram-full-name', $auth_response->user->full_name);
+			$this->session->set_userdata('ig-token', $auth_response->access_token);
+			$this->session->set_userdata('ig-username', $auth_response->user->username);
+			$this->session->set_userdata('ig-avatar', $auth_response->user->profile_picture);
+			$this->session->set_userdata('ig-id', $auth_response->user->id);
+			$this->session->set_userdata('ig-fullname', $auth_response->user->full_name);
 			
 			$this->load->model('mod_user','U');
 			$check_user = $this->U->getDetail('ig_id',$auth_response->user->id);
@@ -70,11 +70,11 @@ class Auth extends CI_Controller
 	public function logout()
     {
 		$array_items = array(
-			'instagram-token' => '',
-			'instagram-username' =>'',
-			'instagram-profile-picture' => '',
-			'instagram-user-id' => '',
-			'instagram-full-name' => '',
+			'ig-token' => '',
+			'ig-username' =>'',
+			'ig-avatar' => '',
+			'ig-id' => '',
+			'ig-fullname' => '',
 			'user-id' => ''
 		);
 		$this->session->unset_userdata($array_items);

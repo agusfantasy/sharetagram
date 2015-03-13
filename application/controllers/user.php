@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-include "configuration.php";
+use Emojione\Emojione;
 
 class User extends CI_Controller
 {
@@ -8,39 +8,41 @@ class User extends CI_Controller
     {
 		parent::__construct();
 
-        $this->load->model('InstagramModel','model');
-        $this->model->setToken(instagram_token());
+        $this->load->model('InstagramModel','instagram');
+        if (empty(session('ig-token'))) {
+            $this->instagram->setToken(INSTAGRAM_TOKEN);
+        }
 	}
 
     public function index($id)
     {
-        $user = $this->model->getUser($id);
+        $user = $this->instagram->getUser($id);
 
-        if ($user->meta->code == 400) {
+        if (!$user){
+            redirect('api');
+        }
+
+        if ($user->meta->code === 400) {
             redirect('user/private');
         }
 
         $data['user'] = $user;
+        $data['bio'] = Emojione::unicodeToImage($user->data->bio);
 
-        if (!empty(session('instagram-user-id'))) {
-            if ($this->get_following_id($id) == 'follows') {
-                $data['following'] = 'following';
-                $data['fclass'] = 'following-box';
-                $data['fid'] = 'unfollow';
-            } else if ($this->get_following_id($id) == 'requested') {
-                $data['following'] = 'requested';
-                $data['fclass'] = 'requested';
-                $data['fid'] = 'requested';
+        if (!empty(session('ig-id'))) {
+            if ($this->get_following_id((session('ig-id')) == 'follows')) {
+                $data['rel_status'] = 'following';
+                $data['rel_class'] = 'btn-success';
+            } else if ($this->get_following_id((session('ig-id')) == 'requested')) {
+                $data['rel_status'] = 'requested';
+                $data['rel_class'] = 'btn-warning';
             } else {
-                $data['following'] = 'follow';
-                $data['fclass'] = 'follow-box';
-                $data['fid'] = 'follow';
+                $data['rel_status'] = 'follow';
+                $data['rel_class'] = 'btn-primary';
             }
         } else {
-            $data['fclass'] = 'follow-box';
-            $data['following'] = 'follow';
-            $data['user_self_id'] = '';
-            $data['fid'] = '';
+            $data['rel_status'] = 'follow';
+            $data['rel_class'] = 'btn-primary';
         }
 
         $data['meta_title'] = "@{$user->data->username} -  {$user->data->full_name} on Instagram | Sharetagram";
@@ -56,7 +58,7 @@ class User extends CI_Controller
     {
         $max_id = get('max_id');
 
-        $query = $this->model->getUserRecent($user_id, $max_id);
+        $query = $this->instagram->getUserRecent($user_id, $max_id);
 
         if (!$query) {
             $response['alert'] = 'fail';
@@ -83,18 +85,23 @@ class User extends CI_Controller
                         $obj->type = $row->type;
 
                         if ($obj->type == 'video') {
-                            $obj->has_video =  'block';
+                            $obj->has_video = 'block';
                         } else {
                             $obj->has_video = 'none';
                         }
 
                         $obj->user_id = $row->user->id;
-                        $obj->user_name = substr($row->user->username,0,21);
+                        $obj->user_name = substr($row->user->username, 0, 21);
                         $obj->image = $row->images->thumbnail->url;
                         $obj->created_time = humanTiming($row->created_time);
                         $obj->likes_count = $row->likes->count;
                         $obj->comments_count = $row->comments->count;
-                        $obj->liked = false;
+                        $obj->liked = $this->isLiked($row->id);
+                        $obj->like_class = '';
+                        $obj->self_id = session('ig-id');
+                        if ($obj->liked) {
+                            $obj->like_class = 'liked';
+                        }
 
                         $result[] = $obj;
                     }
@@ -108,7 +115,7 @@ class User extends CI_Controller
 
     public function followers($user_id)
     {
-        $query = $this->model->getFollowers($user_id, get('next_cursor'));
+        $query = $this->instagram->getFollowers($user_id, get('next_cursor'));
 
         $response['next_cursor'] = '';
         if (property_exists($query->pagination,'next_cursor')) {
@@ -123,7 +130,7 @@ class User extends CI_Controller
 
     public function followings($user_id)
     {
-        $query = $this->model->getFollowings($user_id, get('next_cursor'));
+        $query = $this->instagram->getFollowings($user_id, get('next_cursor'));
 
         $response['next_cursor'] = '';
         if (property_exists($query->pagination,'next_cursor')) {
@@ -136,173 +143,85 @@ class User extends CI_Controller
         echo json_encode($response);
     }
 
-	public function feed()
-	{		
-		// Get the user data
-		//getUserFeed($max = null, $min = null) {		
-		$data['user_id'] = '';
-		$data['user_self_id'] = $this->user_self_id;
-        $max_id = '';
-		if (!empty($this->input->get('max_id'))) {
-			$max_id = $this->input->get('max_id');
-		}
-		
-		$user_data = $this->instagram_api->getUserFeed($max_id);
-		//pr($user_data);
-		if ($user_data->meta->code == 200) {
-			$pagination = $user_data->pagination;
-			$data['next'] = ''; 
-			$username = $this->session->userdata('instagram-username');	
-			if(is_array($user_data->data)) {
-				$data['tag'] = '';
-				$data['recent_data'] = $user_data->data;	
-				if(isset($user_data->pagination->next_max_id)){
-					$data['next'] = $user_data->pagination->next_max_id;		
-				}
-				
-				$self_username = $this->session->userdata('instagram-username');
-				$self_fullname = $this->session->userdata('instagram-full-name');
-				$data['meta_title'] = "@$self_username -  $self_fullname Instagram Photo | Sharetagram"; 
-				$data['meta_description'] = "$self_fullname Instagram Photo feed";
-				$data['meta_keywords'] = "Instagram, IG, web, viewer, stats, photo, video, Facebook";	
-				
-				if($this->input->get('more')==1){
-					$this->load->view('user/recent_more',$data);			
-				}
-				else{
-					$data['content'] = 'user/recent';
-					$this->load->view('layout/dashboard_view',$data);			
-				}
-			}
-		}
-		else{
-			$data['meta_title'] = '@'.ur(3).' Instagram Photo | Sharetagram'; 
-			$data['meta_description'] = '@'.ur(3).' Instagram Photo feed';
-			$data['meta_keywords'] = 'Instagram, IG, web, viewer, stats, photo, video, Facebook';
-			
-			$data['error'] = 'Sorry, an error occurred loading this content.<br>(Instagram could not be reached)';
-			$data['content'] = 'layout/error_api_v';
-			$this->load->view('layour/dashboard_view',$data);
-		}	
-	}
-	
-	//post follow
-	public function post_follow()
+	public function feed($max_id)
 	{
-		if ($this->input->get('id')) {
-			$user_id = $this->input->get('id');
-			if (session('instagram-user-id')) {
-				$action = $this->input->get('action');
-				$q = $this->instagram_api->modifyUserRelationship($user_id, $action);
-			} else {
-				echo "You Should Login";
-			}
-		} else {
-			die('should exsist get id');
-		}
+		$feed = $this->instagram->getUserFeed($max_id);
+
+        $data['meta_title'] = "@{session('ig-username')} - {session('ig-fullname')} Instagram Photo | Sharetagram";
+        $data['meta_description'] = "{session('ig-fullname')} Instagram Photo feed";
+        $data['meta_keywords'] = "Instagram, IG, web, viewer, stats, photo, video, Facebook";
 	}
-	
+
+    /*
+     * get info self follow or not this $user_id
+     */
 	function get_following_id($user_id)
 	{
-		// get info user self follow this user
-		if($this->session->userdata('instagram-user-id')!=''){
-			$q = $this->instagram_api->userRelationship($user_id);
-			//pr($q);
-			if($q){
-				$outgoing_status = $q->data->outgoing_status;
-				return $outgoing_status;	
-			}
-			return false;
+		if (empty(session('ig-id'))) {
+            return false;
+        }
+
+		$q = $this->instagram_api->userRelationship($user_id);
+
+		if($q){
+			$outgoing_status = $q->data->outgoing_status;
+			return $outgoing_status;
 		}
+
 		return false;
 	}
-
-	function fol($type,$user_id=null){
-        // Get the user followers and followings
-        $cursor = '';
-        if (!empty($this->input->get('cursor'))) {
-            $cursor = $this->input->get('cursor');
-        }
-
-        if (ur(4) == 'followers') {
-            $q = $this->M->getFollowers($user_id, $cursor);
-            $meta = 'followers';
-        } else if (ur(4) == 'followings') {
-            $q = $this->M->getFollowings($user_id, $cursor);
-            $meta = 'followings';
-        }
-
-        if (!$q) {
-            redirect('user/private');
-        }
-
-        $data['query'] = $q->data;
-
-        $data['cursor'] = '';
-        if (isset($q->pagination->next_cursor)) {
-            $data['cursor'] = $q->pagination->next_cursor;
-        }
-
-        if ($this->input->get('more') == 1) {
-            $this->load->view('user/flower_more', $data);
-        } else {
-            $data['meta_title'] = "@$rec->username's $meta on Instagram  | Sharetagram";
-            $data['meta_description'] = "@$rec->full_name's $meta on Instagram | Use Instagram online! Sharetagram is the Best Instagram Web Viewer!";
-            $data['meta_keywords'] = "Instagram, IG, web, viewer, stats, photo, video, Facebook";
-            $data['content'] = 'user/flower';
-            $this->load->view('layout/dashboard_view', $data);
-        }
-		$data['user_self_id'] = $user_self_id  = $this->user_self_id;					
-		if($user_self_id!=''){
-			if($user_id == $user_self_id){
-				$user_id = $user_self_id;
-			}			
-		}else{
-			echo 'Not Allowed';		
-		}					
-	}	 
 	
-	public function my_likes()
+	public function my_likes($max_like_id)
     {
-		$data['user_self_id'] = $user_self_id  = $this->user_self_id;
-		$data['tag'] = '';
-		
-		if($user_self_id!=''){
-		
-			if( $this->input->get('max_like_id')!='' ){
-				$max_like_id = $this->input->get('max_like_id');
-			}else{
-				$max_like_id = '';
-			}
-			
-			$q = $this->M->userMediaLiked($max_like_id);
-			
-			if( isset($q->pagination->next_max_like_id) ){
-				$data['next'] = $q->pagination->next_max_like_id;
-			}else{
-				$data['next'] = '';
-			}
-			
-			$data['tag_data'] = $q->data;
-			
-			$data['meta_title'] = "My Likes | Sharetagram"; 
-			$data['meta_description'] = "My Likes | Use Instagram online! Sharetagram is the Best Instagram Web Viewer!";
-			$data['meta_keywords'] = "Instagram, IG, web, viewer, stats, photo, video, Facebook";			
-			
-			
-			$data['more'] = $this->input->get('more');
-			// use view photo list by tag
-			if( $this->input->get('more')==1 ){
-				$this->load->view('tag/hashtag_more',$data);
-			}else{					
-				$data['content'] = 'tag/hashtag';				
-				$this->load->view('layout/dashboard_view',$data);
-			}
-			
-		}else{
-			redirect(site_url());
-		}
+		$query = $this->instagram->userMediaLiked($max_like_id);
+
+        if (!$query) {
+            $response['alert'] = 'fail';
+        } else {
+            if ($query ===  429) {
+                $response['alert'] = $query;
+            } else {
+                $response['alert'] = 'success';
+                $response['code'] = $query->meta->code;
+                $response['pagination'] =  $query->pagination;
+
+                foreach ($query->data as $k => $row) {
+                    $obj = new stdClass();
+                    $obj->id = $row->id;
+                    $obj->type = $row->type;
+
+                    if ($obj->type == 'video') {
+                        $obj->has_video =  'block';
+                    } else {
+                        $obj->has_video = 'none';
+                    }
+
+                    $obj->user_id = $row->user->id;
+                    $obj->user_name = substr($row->user->username,0,21);
+                    $obj->image = $row->images->thumbnail->url;
+                    $obj->created_time = humanTiming($row->created_time);
+                    $obj->likes_count = $row->likes->count;
+                    $obj->comments_count = $row->comments->count;
+
+                    $result[] = $obj;
+                }
+                $response['data'] = $result;
+            }
+        }
+
+        echo json_encode($response);
 	}
+
+    private function isLiked($media_id)
+    {
+        if (empty(session('ig-token'))) return false;
+
+        $liked = $this->instagram->isLiked(session('ig-id'), $media_id);
+        if (!$liked) {
+            return false;
+        }
+        return true;
+    }
 
     public function accountPrivate()
     {
@@ -313,7 +232,6 @@ class User extends CI_Controller
         $data['content'] = 'layout/error_api_v';
         $this->load->view('layout/dashboard_view',$data);
     }
-	
 }
 
 /* End of file user.php */

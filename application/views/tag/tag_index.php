@@ -1,4 +1,4 @@
-<div ng-app="myApp" ng-controller="userTagController">
+<div ng-app="myApp" ng-controller="TagController">
 
     <div infinite-scroll='tag.nextPage()' infinite-scroll-disabled='tag.busy' infinite-scroll-distance='1'>
         <div class="thumb-cont">
@@ -27,7 +27,7 @@
                         <div class="field">
                             <div class="photo-time">{{ item.created_time }}</div>
                             <div class="like-comment">
-                                <i class="fa fa-heart fa-fw"></i>{{ item.likes_count }}
+                                <i ng-click="like()" class="fa fa-heart fa-fw {{ item.like_class }}"></i>{{ item.likes_count }}
                                 <i class="fa fa-comment fa-fw"></i> {{ item.comments_count }}
                             </div>
                             <div class="clr"></div>

@@ -73,12 +73,17 @@ $route['feed'] = "user/feed";
 $route['my_likes'] = "user/my_likes";
 $route['user/private'] = 'user/accountPrivate';
 
+$route['like'] = "likes/isLiked";
+
 // routes for info
 $route['about'] = "info/about";
 $route['privacy'] = "info/privacy";
 $route['tos'] = "info/tos";
 $route['contact'] = "info/contact";
 $route['contact_post'] = "info/contact_post";
+
+// routes for media
+$route['media'] = "media/index";
 
 // routes for admin
 $route['admin'] = "admin/ig/index";

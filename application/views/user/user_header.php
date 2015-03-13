@@ -5,23 +5,16 @@
     <div class="user-detail-profil-info">
         <b><?php echo $user->data->username ?></b><br>
         <?php echo $user->data->full_name ?>
-        <p> <?php echo $user->data->bio ?> </p>
+        <p> <?php echo $bio ?> </p>
         <a target="_blank" title="<?php echo $user->data->website ?>"
            href="<?php echo $user->data->website ?>"><?php echo $user->data->website ?></a>
     </div>
 </div>
 
 <div class="user-detail-action col-md-5">
-    <?php
-    $fstyle_self = '';
-    if ($user_self_id == $user->data->id) {
-        $fstyle_self = 'style="background-color: rgba(0, 0, 0, 0);color: rgba(0, 0, 0, 0);cursor: none;"';
-    }
-    ?>
-    <a href="#" class="btn btn-primary btn-large follow">
-        <div id="follow" data-id="<?php echo $fid; ?>">
-            <?php echo $following; ?>
-        </div>
+    <a href="#" id="follow" data-self-id="<?php echo session('ig-id') ?>"
+       data-user-id="<?php echo $user->data->id ?>" data-rel-status="<?php echo $rel_status; ?>" class="btn <?php echo $rel_class ?> btn-large follow">
+         <?php echo $rel_status; ?>
     </a>
 
     <a class="btn btn-default" href="<?php echo "/user/{$user->data->id}/{$user->data->username}"; ?>">
