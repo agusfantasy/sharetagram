@@ -5,8 +5,14 @@ class Tag extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('InstagramModel','instagram');
-        $this->instagram->setToken(instagram_token());
+        $this->load->model('instagram_model','instagram');
+		$this->load->model('mod_user','user');
+		
+		if (empty(session('ig_token'))) {
+	        $this->instagram->setToken($this->user->getTokenUsed());
+		} else {
+			$this->instagram->setToken(session('ig_token'));
+		}
     }
 
     /*	get photos/videos by tag */
@@ -32,9 +38,11 @@ class Tag extends CI_Controller
         if (!$query) {
             $response['alert'] = 'fail';
         } else {
-            if ($query ===  429) {
-                $response['alert'] = $query;
-            } else {
+            if (property_exists($query ,'code')) {
+				if ($query->code === 429) {
+					$response['alert'] = 'limit';
+				}
+			} else {
                 $response['alert'] = 'success';
                 $response['code'] = $query->meta->code;
                 $response['pagination'] =  $query->pagination;
@@ -58,7 +66,7 @@ class Tag extends CI_Controller
                     $obj->comments_count = $row->comments->count;
                     $obj->liked = $this->isLiked($row->id);
                     $obj->like_class = '';
-                    $obj->self_id = session('ig-id');
+                    $obj->self_id = session('ig_id');
                     if ($obj->liked) {
                         $obj->like_class = 'liked';
                     }
@@ -74,9 +82,9 @@ class Tag extends CI_Controller
 
     private function isLiked($media_id)
     {
-        if (empty(session('ig-token'))) return false;
+        if (empty(session('ig_token'))) return false;
 
-        $liked = $this->instagram->isLiked(session('ig-id'), $media_id);
+        $liked = $this->instagram->isLiked(session('ig_id'), $media_id);
         if (!$liked) {
             return false;
         }

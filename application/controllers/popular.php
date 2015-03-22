@@ -6,12 +6,17 @@ class Popular extends CI_Controller
     {
         parent::__construct();
 
-        $this->load->model('InstagramModel', 'M');
+        $this->load->model('instagram_model', 'instagram');
+		if (empty(session('ig_token'))) {
+	        $this->instagram->setToken(instagram_token());
+		} else {
+			$this->instagram->setToken(session('ig_token'));
+		}
     }
 
     public function index()
     {
-        $popular = $this->M->getPopular();
+        $popular = $this->instagram->getPopular();
 
         if (!$popular) {
             redirect('api');

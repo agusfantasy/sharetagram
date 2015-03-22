@@ -72,6 +72,7 @@ $route['followings/(:num)'] = "user/followings/$1";
 $route['feed'] = "user/feed";
 $route['my_likes'] = "user/my_likes";
 $route['user/private'] = 'user/accountPrivate';
+$route['post_follow'] = 'user/postFollow';
 
 $route['like'] = "likes/isLiked";
 

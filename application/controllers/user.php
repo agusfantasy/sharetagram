@@ -8,32 +8,42 @@ class User extends CI_Controller
     {
 		parent::__construct();
 
-        $this->load->model('InstagramModel','instagram');
-        if (empty(session('ig-token'))) {
-            $this->instagram->setToken(INSTAGRAM_TOKEN);
-        }
+        $this->load->model('instagram_model','instagram');
+		$this->load->model('mod_user','user');
+		
+		if (empty(session('ig_token'))) {
+	        $this->instagram->setToken($this->user->getTokenUsed());
+		} else {
+			$this->instagram->setToken(session('ig_token'));
+		}
 	}
 
     public function index($id)
     {
         $user = $this->instagram->getUser($id);
-
-        if (!$user){
+		
+		if (!$user){
             redirect('api');
         }
 
+		if (property_exists($user ,'code')) {
+			if ($user->code === 429) {
+				redirect('limit');
+			}
+		}
+		
         if ($user->meta->code === 400) {
             redirect('user/private');
         }
 
         $data['user'] = $user;
-        $data['bio'] = Emojione::unicodeToImage($user->data->bio);
-
-        if (!empty(session('ig-id'))) {
-            if ($this->get_following_id((session('ig-id')) == 'follows')) {
+		
+		$relationship = $this->instagram->getRelationship($user->data->id);
+        if (!empty(session('ig_id')) && $relationship) {
+            if ($relationship == 'follows') {
                 $data['rel_status'] = 'following';
                 $data['rel_class'] = 'btn-success';
-            } else if ($this->get_following_id((session('ig-id')) == 'requested')) {
+            } else if ($relationship == 'requested') {
                 $data['rel_status'] = 'requested';
                 $data['rel_class'] = 'btn-warning';
             } else {
@@ -63,12 +73,15 @@ class User extends CI_Controller
         if (!$query) {
             $response['alert'] = 'fail';
         } else {
-            if ($query ===  429) {
-                $response['alert'] = 'limit';
-            } else {
+			if (property_exists($query ,'code')) {
+				if ($query->code === 429) {
+					$response['alert'] = 'limit';
+				}
+			} else {
                 $response['alert'] = 'success';
                 $response['code'] = $query->meta->code;
-
+				$response['self_id'] = session('ig_id'); 
+				
                 $response['max_id'] = '';
                 if (property_exists($query->pagination,'next_max_id')) {
                     $response['max_id'] =  $query->pagination->next_max_id;
@@ -96,9 +109,8 @@ class User extends CI_Controller
                         $obj->created_time = humanTiming($row->created_time);
                         $obj->likes_count = $row->likes->count;
                         $obj->comments_count = $row->comments->count;
-                        $obj->liked = $this->isLiked($row->id);
+                        $obj->liked = $this->instagram->isLiked(session('ig_id'), $row->id);						
                         $obj->like_class = '';
-                        $obj->self_id = session('ig-id');
                         if ($obj->liked) {
                             $obj->like_class = 'liked';
                         }
@@ -116,14 +128,20 @@ class User extends CI_Controller
     public function followers($user_id)
     {
         $query = $this->instagram->getFollowers($user_id, get('next_cursor'));
+		
+		if (property_exists($query ,'code')) {
+			if ($query->code === 429) {
+				$response['alert'] = 'limit';
+			}
+		} else {
+			$response['next_cursor'] = '';
+			if (property_exists($query->pagination,'next_cursor')) {
+				$response['next_cursor'] =  $query->pagination->next_cursor;
+			}
 
-        $response['next_cursor'] = '';
-        if (property_exists($query->pagination,'next_cursor')) {
-            $response['next_cursor'] =  $query->pagination->next_cursor;
-        }
-
-        $response['count_per_load'] = count($query->data);
-        $response['data'] = $query->data;
+			$response['count_per_load'] = count($query->data);
+			$response['data'] = $query->data;
+		}
 
         echo json_encode($response);
     }
@@ -131,14 +149,20 @@ class User extends CI_Controller
     public function followings($user_id)
     {
         $query = $this->instagram->getFollowings($user_id, get('next_cursor'));
+		
+		if (property_exists($query ,'code')) {
+			if ($query->code === 429) {
+				$response['alert'] = 'limit';
+			}
+		} else {
+			$response['next_cursor'] = '';
+			if (property_exists($query->pagination,'next_cursor')) {
+				$response['next_cursor'] =  $query->pagination->next_cursor;
+			}
 
-        $response['next_cursor'] = '';
-        if (property_exists($query->pagination,'next_cursor')) {
-            $response['next_cursor'] =  $query->pagination->next_cursor;
-        }
-
-        $response['count_per_load'] = count($query->data);
-        $response['data'] = $query->data;
+			$response['count_per_load'] = count($query->data);
+			$response['data'] = $query->data;
+		}
 
         echo json_encode($response);
     }
@@ -150,25 +174,6 @@ class User extends CI_Controller
         $data['meta_title'] = "@{session('ig-username')} - {session('ig-fullname')} Instagram Photo | Sharetagram";
         $data['meta_description'] = "{session('ig-fullname')} Instagram Photo feed";
         $data['meta_keywords'] = "Instagram, IG, web, viewer, stats, photo, video, Facebook";
-	}
-
-    /*
-     * get info self follow or not this $user_id
-     */
-	function get_following_id($user_id)
-	{
-		if (empty(session('ig-id'))) {
-            return false;
-        }
-
-		$q = $this->instagram_api->userRelationship($user_id);
-
-		if($q){
-			$outgoing_status = $q->data->outgoing_status;
-			return $outgoing_status;
-		}
-
-		return false;
 	}
 	
 	public function my_likes($max_like_id)
@@ -212,16 +217,11 @@ class User extends CI_Controller
         echo json_encode($response);
 	}
 
-    private function isLiked($media_id)
-    {
-        if (empty(session('ig-token'))) return false;
-
-        $liked = $this->instagram->isLiked(session('ig-id'), $media_id);
-        if (!$liked) {
-            return false;
-        }
-        return true;
-    }
+	public function postFollow()
+	{		
+		$result = $this->instagram->modifyRelationship(post('user_id'), post('action'));
+		echo json_encode($result);
+	}
 
     public function accountPrivate()
     {

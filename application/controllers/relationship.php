@@ -1,24 +1,25 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class User extends CI_Controller
+class Jobs extends CI_Controller
 {
     public function __construct()
     {
         parent::__construct();
 
-        $this->load->model('InstagramModel','model');\
-        if (empty(session('instagram-token')) {
+        $this->load->model('instagram_model','instagram');
+		$this->load->model('mod_user','user');
+        /*if (empty(session('instagram-token')) {
             $token = instagram_token();
         } else {
             $token = session('instagram-token');
-        }
+        }*/
 
-        $this->model->setToken(instagram_token());
+        //$this->model->setToken(instagram_token());
     }
 
-    public function like()
+    public function index()
     {
-
+		pr($this->user->getTokens()); die();
     }
 
     public function like()

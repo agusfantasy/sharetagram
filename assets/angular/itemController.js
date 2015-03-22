@@ -49,7 +49,7 @@ app.controller("itemController", function($scope, $http) {
             }
 
             var url = '/like';
-            $http.post(url, {media_id: path[3], action: action}).
+            $http.post(url, {media_id: path[2], action: action}).
                 success(function (response) {
                 }).
                 error(function (response) {

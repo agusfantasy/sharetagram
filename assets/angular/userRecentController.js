@@ -1,11 +1,11 @@
-app.controller("userRecentController", function($scope, Recent) {
+app.controller("userRecentController", function($scope, $http, Recent) {
     $scope.recent = new Recent();
-    $scope.like = function($http){
+    $scope.like = function(){
 
         var id = this.$index;
         var recentItem = $scope.recent.items[id];
 
-        if (!recentItem.selfId) {
+        if ($scope.recent.self_id=='') {
             alert('Please Sign in with Instagram!');
         } else {
             var action = '';
@@ -21,7 +21,7 @@ app.controller("userRecentController", function($scope, Recent) {
                 recentItem.likes_count = parseInt(recentItem.likes_count,10) - 1 ;
             }
 
-            /*$http.post('/like', {media_id:  recentItem.id , action: action}).
+            $http.post('/like', {media_id:  recentItem.id , action: action}).
                 success(function (response) {
                     console.log(response);
                 }).
@@ -38,7 +38,7 @@ app.controller("userRecentController", function($scope, Recent) {
                         recentItem.like_class = 'liked';
                         recentItem.likes_count = parseInt(recentItem.likes_count, 10) + 1;
                     }
-                });*/
+				});
         }
     }
 });

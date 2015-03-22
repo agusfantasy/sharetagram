@@ -2,7 +2,8 @@
     "require": {
         "monolog/monolog": "1.2.*",
         "oh/emoji-bundle": "dev-master",
-        "emojione/emojione": "dev-master"
+        "emojione/emojione": "dev-master",
+		"nategood/httpful": "*"
     },
 	"require-dev": {
 	

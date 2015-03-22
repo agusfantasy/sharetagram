@@ -1,5 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed.');
 
+use Emojione\Emojione;
+
 function humanTiming ($time)
 {
 	//$time = strtotime('2010-04-28 17:25:43');
@@ -127,5 +129,9 @@ function get($str){
 function post($str){
     $CI =getCI();
     return $CI->input->post($str);
+}
+
+function emoji($str){    
+    return Emojione::unicodeToImage($str);
 }
 ?>

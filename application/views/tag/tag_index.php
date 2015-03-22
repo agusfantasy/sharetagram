@@ -16,7 +16,7 @@
 
                         <div class="img" id="img">
                             <a href="/m/{{ item.id }}">
-                                <img class="lazy" src="/images/loading.bax-shop.nl.gif" ng-src="{{ item.image }}">
+                                <img class="lazy" src="<?php echo img_path()?>loading.bax-shop.nl.gif" ng-src="{{ item.image }}">
 
                                 <div class="has-video" style="display: {{ item.has_video }}">
                                     <div class="play"></div>

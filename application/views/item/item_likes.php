@@ -1,5 +1,5 @@
 <i ng-click="isLiked()"
-   id="like" data-self-id="<?php session('ig-id') ?>"
+   id="like" data-self-id="<?php echo session('ig_id') ?>"
    data-status="<?php $is_liked ?>"
    class="fa fa-heart fa-lg <?php echo $is_liked ? 'liked' : ''   ?>"  ></i>
 

@@ -8,8 +8,14 @@ class Item extends CI_Controller
     {
         parent::__construct();
 
-        $this->load->model('InstagramModel', 'instagram');
-        $this->instagram->setToken(instagram_token());
+        $this->load->model('instagram_model', 'instagram');
+		$this->load->model('mod_user','user');
+		
+		if (empty(session('ig_token'))) {
+	        $this->instagram->setToken($this->user->getTokenUsed());
+		} else {
+			$this->instagram->setToken(session('ig_token'));
+		}		
     }
 
     public function index($media_id)
@@ -19,7 +25,13 @@ class Item extends CI_Controller
         if (!$media) {
             redirect('api?url=m/'.urldecode($media_id));
         }
-
+		
+		if (property_exists($media ,'code')) {
+			if ($media->code === 429) {
+				redirect('limit');
+			}
+		}		
+		
         $data['media'] = $media;
 
         $data['type'] = $media->data->type;
@@ -30,27 +42,21 @@ class Item extends CI_Controller
 
         $data['location'] = $media->data->location;
 
-        $data['caption'] = "";
+        $meta_desc = $data['caption'] = "";		
         if (! is_null($media->data->caption) ) {
-            $data['caption'] = Emojione::unicodeToImage($media->data->caption->text);
+            $data['caption'] = Emojione::unicodeToImage($media->data->caption->text);	
+			$meta_desc = $media->data->caption->text. ' - ';
         }
-
+		
         $data['user'] = $media->data->user;
 
         $data['tags'] = $media->data->tags;
         $data['comments'] = $media->data->comments;
         $data['likes'] = $media->data->likes;
-        $data['is_liked'] = $this->isLiked($media_id);
+        $data['is_liked'] = $media->data->user_has_liked;
 
-        $data['meta_title'] = "Instagram Photo by @{$data['user']->username} ({$data['user']->full_name}) | Sharetagram";
-
-        if (empty($data['caption'])) {
-            $data['meta_description'] = "Discover @{$data['user']->username} - {$data['user']->full_name} Instagram photo.
-            See likes and comments. Post a comment with Facebook. Share it with friends.";
-        } else {
-            $data['meta_description']  = substr($data['caption'], 0, 150);
-        }
-
+        $data['meta_title'] = "Instagram Photo by @{$data['user']->username} ({$data['user']->full_name}) | Sharetagram";			
+		$data['meta_description'] = $meta_desc . "Browse All Instagram on the web, like, comment, follow and much more in Sharetagram.com";
         $data['meta_keywords'] = "Instagram, IG, web, viewer, stats, photo, video, Facebook";
 
         $data['content'] = 'item/item_index';
@@ -82,16 +88,5 @@ class Item extends CI_Controller
         }
 
         echo json_encode($response);
-    }
-
-    private function isLiked($media_id)
-    {
-        if (empty(session('ig-token'))) return false;
-
-        $liked = $this->instagram->isLiked(session('ig-id'), $media_id);
-        if (!$liked) {
-            return false;
-        }
-        return true;
     }
 }

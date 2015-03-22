@@ -6,12 +6,18 @@ class Search extends CI_Controller
     {
         parent::__construct();
 
-        $this->load->model('InstagramModel','instagram');
-        $this->instagram->setToken(instagram_token());
+        $this->load->model('instagram_model','instagram');		
+		$this->load->model('mod_user','user');
+		
+		if (empty(session('ig_token'))) {
+	        $this->instagram->setToken($this->user->getTokenUsed());
+		} else {
+			$this->instagram->setToken(session('ig_token'));
+		}
     }
 
     public function index()
-    {
+    {	
         $data['meta_title'] = "Search Instagram Photos, Hashtags and Users | Sharetagram";
         $data['meta_description'] = "Search Instagram online. The best Instagram search engine for photos, videos, hashtags and users.";
         $data['meta_keywords'] = "Instagram search, Instagram search engine, Instagram search users, Instagram search hashtags, Instagram search photos, search Instagram, Instagram search videos";
@@ -43,6 +49,11 @@ class Search extends CI_Controller
         if (!$tags_search && !$users_search) {
             redirect('api?url=search/'.urldecode($keyword));
         }
+
+		if (property_exists($tags_search, 'code') || property_exists($users_search,'code')) {
+			if($tags_search->code === 429 || $users_search === 429)
+			redirect('limit');
+		}
 
         $data['tags'] = $tags_search;
         $data['users'] = $users_search;

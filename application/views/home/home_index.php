@@ -47,7 +47,7 @@
     </div>
 
     <div class="row signin">
-        <?php if ($this->session->userdata('instagram-user-id') == '') :  ?>
+        <?php if (session('ig_id') == '') :  ?>
             <a id="signin_ig" href="<?php echo base_url() . 'auth/login'; ?>?url=<?php echo current_url() ?>"
                class="bouton bt-instagram">
                 <i class="fa fa-instagram fa-fw"></i> 

@@ -35,7 +35,7 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 
-    <link href="<?php echo asset_path(); ?>font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="<?php echo asset_url() ?>font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
 
     <link rel="stylesheet" href="//cdn.jsdelivr.net/emojione/1.3.0/assets/css/emojione.min.css" />
     
@@ -53,19 +53,21 @@
 	$style = '';
 	if (empty(ur(1))) {
 		$container = 'home-container';
-	} else if (ur(1) == 'contest') {
-		$container = 'contest-container';
 	} else {
 		$container = 'page-container';
-		if (!empty(session('instagram-user-id'))) {
+		/*if (!empty(session('ig_id'))) {
 			$style = 'style="padding-top:0;margin-top:10px;"';
-			$this->load->view('user/header');
-		}
+			$this->load->view('user/user_self_header');
+		}*/
 	}
 	?>
 
-	<div <?php  echo $style; ?> class="<?php  echo $container;?>"><?php $this->load->view($content); ?></div>
+	<div <?php  echo $style; ?> class="<?php  echo $container;?>">
+		<?php $this->load->view($content); ?>
+	</div>
+	
 	<div class="clr"></div>
+	
 	<footer><?php $this->load->view('layout/footer_view'); ?></footer>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
