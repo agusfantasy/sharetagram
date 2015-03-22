@@ -1,5 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+namespace Sharetagram\Controllers\Item;
+
 use Emojione\Emojione;
 
 class Item extends CI_Controller
