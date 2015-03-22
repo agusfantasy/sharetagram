@@ -15,7 +15,7 @@
 
                     <div class="img" id="img">
                         <a href="<?php echo "/m/$row->id" ?>">
-                            <img class="lazy" src="/images/loading.bax-shop.nl.gif" data-original="<?php echo $row->images->thumbnail->url ?>">
+                            <img class="lazy" src="/static/images/loading.bax-shop.nl.gif" data-original="<?php echo $row->images->thumbnail->url ?>">
                             <?php if ($row->type == 'video'): ?>
                                 <div class="has-video"><div class="play"></div></div>
                             <?php endif ?>

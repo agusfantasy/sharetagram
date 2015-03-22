@@ -2,21 +2,22 @@
 
 class Search extends CI_Controller
 {
-    private $user_self_id;
-
     public function __construct()
     {
         parent::__construct();
 
-        $this->load->model('mod_instagram','M');
-
-        if ($this->session->userdata('instagram-user-id') != '') {
-            $this->user_self_id = $this->session->userdata('instagram-user-id');
-        }
+        $this->load->model('instagram_model','instagram');		
+		$this->load->model('mod_user','user');
+		
+		if (empty(session('ig_token'))) {
+	        $this->instagram->setToken($this->user->getTokenUsed());
+		} else {
+			$this->instagram->setToken(session('ig_token'));
+		}
     }
 
     public function index()
-    {
+    {	
         $data['meta_title'] = "Search Instagram Photos, Hashtags and Users | Sharetagram";
         $data['meta_description'] = "Search Instagram online. The best Instagram search engine for photos, videos, hashtags and users.";
         $data['meta_keywords'] = "Instagram search, Instagram search engine, Instagram search users, Instagram search hashtags, Instagram search photos, search Instagram, Instagram search videos";
@@ -28,7 +29,7 @@ class Search extends CI_Controller
 
     public function search_post()
     {
-        $keyword = ur(3);
+        $keyword = trim(ur(3));
         if (empty($keyword)) {
             redirect(site_url());
         }
@@ -42,22 +43,29 @@ class Search extends CI_Controller
             redirect('index404');
         }
 
-        $tags_search = $this->M->tagSearch($keyword);
-        $users_search = $this->M->userSearch($keyword);
+        $tags_search = $this->instagram->tagSearch($keyword);
+        $users_search = $this->instagram->userSearch($keyword);
 
-        if  (!$tags_search && !$users_search) {
+        if (!$tags_search && !$users_search) {
             redirect('api?url=search/'.urldecode($keyword));
         }
+
+		if (property_exists($tags_search, 'code') || property_exists($users_search,'code')) {
+			if($tags_search->code === 429 || $users_search === 429)
+			redirect('limit');
+		}
 
         $data['tags'] = $tags_search;
         $data['users'] = $users_search;
 
-        $data['meta_title'] = "Search Instagram for $keyword | Sharetagram";
+        $clean_keyword = urldecode($keyword);
+
+        $data['meta_title'] = "Search Instagram for {$clean_keyword} | Sharetagram";
         $data['meta_description'] = "Find all Instagram hashtags and users matching the search $keyword";
         $data['meta_keywords'] = "Instagram, IG, web, viewer, stats, photo, video, Facebook";
-        $data['meta_image'] = base_url() . 'images/logo_500.png';
+        $data['meta_image'] = 'static/images/logo_500.png';
 
-        $data['keyword'] = urldecode($keyword);
+        $data['keyword'] = $clean_keyword;
 
         $data['content'] = 'search/result';
         $this->load->view('layout/dashboard_view',$data);

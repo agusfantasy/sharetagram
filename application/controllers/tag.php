@@ -2,16 +2,17 @@
 
 class Tag extends CI_Controller
 {
-    private $user_self_id;
-
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('mod_instagram','mod');
-
-        if (!empty($this->session->userdata('instagram-user-id'))) {
-            $this->user_self_id = $this->session->userdata('instagram-user-id');
-        }
+        $this->load->model('instagram_model','instagram');
+		$this->load->model('mod_user','user');
+		
+		if (empty(session('ig_token'))) {
+	        $this->instagram->setToken($this->user->getTokenUsed());
+		} else {
+			$this->instagram->setToken(session('ig_token'));
+		}
     }
 
     /*	get photos/videos by tag */
@@ -26,20 +27,22 @@ class Tag extends CI_Controller
 
         $data['title'] = "#$tag";
 
-        $data['content'] = 'tag/hashtag';
+        $data['content'] = 'tag/tag_index';
         $this->load->view('layout/dashboard_view', $data);
     }
 
-    public function more()
+    public function more($tag)
     {
-        $query = $this->mod->getTag($this->input->get('tag'), $this->input->get('max_id'));
+        $query = $this->instagram->getTag($tag, get('max_id'));
 
         if (!$query) {
             $response['alert'] = 'fail';
         } else {
-            if ($query ===  429) {
-                $response['alert'] = $query;
-            } else {
+            if (property_exists($query ,'code')) {
+				if ($query->code === 429) {
+					$response['alert'] = 'limit';
+				}
+			} else {
                 $response['alert'] = 'success';
                 $response['code'] = $query->meta->code;
                 $response['pagination'] =  $query->pagination;
@@ -49,9 +52,10 @@ class Tag extends CI_Controller
                     $obj->id = $row->id;
                     $obj->type = $row->type;
 
-                    $obj->has_video = '';
                     if ($obj->type == 'video') {
-                        $obj->has_video =  '<div class="has-video"><div class="play"></div></div>';
+                        $obj->has_video =  'block';
+                    } else {
+                        $obj->has_video = 'none';
                     }
 
                     $obj->user_id = $row->user->id;
@@ -60,6 +64,12 @@ class Tag extends CI_Controller
                     $obj->created_time = humanTiming($row->created_time);
                     $obj->likes_count = $row->likes->count;
                     $obj->comments_count = $row->comments->count;
+                    $obj->liked = $this->isLiked($row->id);
+                    $obj->like_class = '';
+                    $obj->self_id = session('ig_id');
+                    if ($obj->liked) {
+                        $obj->like_class = 'liked';
+                    }
 
                     $result[] = $obj;
                 }
@@ -68,6 +78,17 @@ class Tag extends CI_Controller
         }
 
         echo json_encode($response);
+    }
+
+    private function isLiked($media_id)
+    {
+        if (empty(session('ig_token'))) return false;
+
+        $liked = $this->instagram->isLiked(session('ig_id'), $media_id);
+        if (!$liked) {
+            return false;
+        }
+        return true;
     }
 }
 
