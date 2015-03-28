@@ -76,7 +76,9 @@ class User extends CI_Controller
 			if (property_exists($query ,'code')) {
 				if ($query->code === 429) {
 					$response['alert'] = 'limit';
-				}
+				} elseif ($query->code === 400) {
+                    $response['alert'] = 'retry';
+                }
 			} else {
                 $response['alert'] = 'success';
                 $response['code'] = $query->meta->code;

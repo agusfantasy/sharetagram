@@ -1,5 +1,8 @@
 <?php
 require __DIR__.'/vendor/autoload.php';
+
+require __DIR__.'/config_define.php';
+
 /*
  *---------------------------------------------------------------
  * APPLICATION ENVIRONMENT
@@ -18,8 +21,7 @@ require __DIR__.'/vendor/autoload.php';
  * NOTE: If you change these, also change the error_reporting() code below
  *
  */
-	//define('ENVIRONMENT', 'development');
-	define('ENVIRONMENT', 'production');
+	define('ENVIRONMENT', APP_ENV);
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING
@@ -47,7 +49,6 @@ if (defined('ENVIRONMENT'))
 	}
 }
 
-include "config_define.php";
 /*
  *---------------------------------------------------------------
  * SYSTEM FOLDER NAME
