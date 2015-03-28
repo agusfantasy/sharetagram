@@ -49,6 +49,7 @@ app.factory('Recent', function($http) {
         this.busy = false;
         this.max_id = '';
         this.count = 0;
+        this.more_btn = false;
     };
 
     Recent.prototype.nextPage = function() {
@@ -58,16 +59,39 @@ app.factory('Recent', function($http) {
         if (this.busy) return;
         this.busy = true;
 
-        var url = "/user/recent/" + path[2] + "?max_id=" + this.max_id ;
 
-        $http.get(url).success(function(data) {
-            var items = data.data;
-            for (var i = 0; i < items.length; i++) {
-                this.items.push(items[i]);
+        var urlRecent = "/user/recent/" + path[2] ;
+
+        var req = {
+            method: 'GET',
+            url: urlRecent,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            cache : true,
+            params: { max_id: this.max_id }
+        };    
+
+        $http(req).
+        success(function(data) {
+            if (data.alert =='fail' || data.alert =='limit' ||  data.alert == 'retry') {
+                this.more_btn = true;                  
+                this.busy = false; 
+            } else {
+                var items = data.data;
+                for (var i = 0; i < items.length; i++) {
+                    this.items.push(items[i]);
+                }
+                this.max_id = data.max_id;
+                this.busy = false;
             }
-            this.max_id = data.max_id;
-            this.busy = false;
-        }.bind(this));
+        }.bind(this)).
+        error(function(data, status, headers, config) {            
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+            this.busy = false;    
+            this.more_btn = true;
+        });
     };
 
     return Recent;
