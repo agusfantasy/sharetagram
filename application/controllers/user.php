@@ -71,55 +71,35 @@ class User extends CI_Controller
         $query = $this->instagram->getUserRecent($user_id, $max_id);
 
         if (!$query) {
+            $response['code'] = 409;
             $response['alert'] = 'fail';
         } else {
 			if (property_exists($query ,'code')) {
-				if ($query->code === 429) {
-					$response['alert'] = 'limit';
-				} elseif ($query->code === 400) {
-                    $response['alert'] = 'retry';
+
+                $response['code'] = $query->code;
+                if ($query->code === 429) {
+                    $response['alert'] = 'limit';
+                } else {
+                    $response['alert'] = 'fail';
                 }
+
 			} else {
-                $response['alert'] = 'success';
-                $response['code'] = $query->meta->code;
-				$response['self_id'] = session('ig_id'); 
-				
-                $response['max_id'] = '';
-                if (property_exists($query->pagination,'next_max_id')) {
-                    $response['max_id'] =  $query->pagination->next_max_id;
-                }
+                $response['meta_code'] = $query->meta->code;
+                if ($query->meta->code === 400) {
+                    $response['alert'] = 'fail';
+                } else {
+                    $response['alert'] = 'success';
+                    $response['self_id'] = session('ig_id');
 
-                $response['data'] = '';
-                if (!empty($query->data)) {
-
-                    $response['count_per_load'] = count($query->data);
-
-                    foreach ($query->data as $k => $row) {
-                        $obj = new stdClass();
-                        $obj->id = $row->id;
-                        $obj->type = $row->type;
-
-                        if ($obj->type == 'video') {
-                            $obj->has_video = 'block';
-                        } else {
-                            $obj->has_video = 'none';
-                        }
-
-                        $obj->user_id = $row->user->id;
-                        $obj->user_name = substr($row->user->username, 0, 21);
-                        $obj->image = $row->images->thumbnail->url;
-                        $obj->created_time = humanTiming($row->created_time);
-                        $obj->likes_count = $row->likes->count;
-                        $obj->comments_count = $row->comments->count;
-                        $obj->liked = $this->instagram->isLiked(session('ig_id'), $row->id);						
-                        $obj->like_class = '';
-                        if ($obj->liked) {
-                            $obj->like_class = 'liked';
-                        }
-
-                        $result[] = $obj;
+                    $response['max_id'] = '';
+                    if (property_exists($query->pagination, 'next_max_id')) {
+                        $response['max_id'] = $query->pagination->next_max_id;
                     }
-                    $response['data'] = $result;
+
+                    if (!empty($query->data)) {
+                        $response['data'] = $this->mediaCollection($query->data);
+                        $response['count_per_load'] = count($query->data);
+                    }
                 }
             }
         }
@@ -191,28 +171,7 @@ class User extends CI_Controller
                 $response['alert'] = 'success';
                 $response['code'] = $query->meta->code;
                 $response['pagination'] =  $query->pagination;
-
-                foreach ($query->data as $k => $row) {
-                    $obj = new stdClass();
-                    $obj->id = $row->id;
-                    $obj->type = $row->type;
-
-                    if ($obj->type == 'video') {
-                        $obj->has_video =  'block';
-                    } else {
-                        $obj->has_video = 'none';
-                    }
-
-                    $obj->user_id = $row->user->id;
-                    $obj->user_name = substr($row->user->username,0,21);
-                    $obj->image = $row->images->thumbnail->url;
-                    $obj->created_time = humanTiming($row->created_time);
-                    $obj->likes_count = $row->likes->count;
-                    $obj->comments_count = $row->comments->count;
-
-                    $result[] = $obj;
-                }
-                $response['data'] = $result;
+                $response['data'] = $this->mediaCollection($query->data);
             }
         }
 
@@ -233,6 +192,36 @@ class User extends CI_Controller
         $data['error'] = 'Oops... this account is private.';
         $data['content'] = 'layout/error_api_v';
         $this->load->view('layout/dashboard_view',$data);
+    }
+
+    public function mediaCollection($data)
+    {
+        foreach ($data as $k => $row) {
+            $obj = new stdClass();
+            $obj->id = $row->id;
+            $obj->type = $row->type;
+
+            if ($obj->type == 'video') {
+                $obj->has_video = 'block';
+            } else {
+                $obj->has_video = 'none';
+            }
+
+            $obj->user_id = $row->user->id;
+            $obj->user_name = substr($row->user->username, 0, 21);
+            $obj->image = $row->images->thumbnail->url;
+            $obj->created_time = humanTiming($row->created_time);
+            $obj->likes_count = $row->likes->count;
+            $obj->comments_count = $row->comments->count;
+            $obj->liked = $this->instagram->isLiked(session('ig_id'), $row->id);
+            $obj->like_class = '';
+            if ($obj->liked) {
+                $obj->like_class = 'liked';
+            }
+
+            $result[] = $obj;
+        }
+        return $result;
     }
 }
 

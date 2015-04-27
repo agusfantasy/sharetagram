@@ -41,6 +41,10 @@ app.controller("userRecentController", function($scope, $http, Recent) {
 				});
         }
     }
+
+    /*$scope.loadMore = function(){
+        Recent().nextPage();
+    }*/
 });
 
 app.factory('Recent', function($http) {
@@ -74,7 +78,7 @@ app.factory('Recent', function($http) {
 
         $http(req).
         success(function(data) {
-            if (data.alert =='fail' || data.alert =='limit' ||  data.alert == 'retry') {
+            if (data.alert =='fail' || data.alert =='limit' ) {
                 this.more_btn = true;                  
                 this.busy = false; 
             } else {
