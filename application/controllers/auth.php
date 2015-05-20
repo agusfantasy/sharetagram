@@ -13,6 +13,7 @@ class Auth extends CI_Controller
     {
 		//save url before login to session for callback after instagram login
  		if ( get('url') != '' ) {
+            $this->session->unset_userdata('url_before_login');
             $this->session->set_userdata('url_before_login', get('url'));
 			//redirect( $this->input->get('url') );
 		}
