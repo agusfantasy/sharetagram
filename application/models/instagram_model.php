@@ -193,12 +193,15 @@ class Instagram_model extends CI_Model
 		return $query;       
     }
 
-    public function getUserFeed($max_id) {
+    public function getUserFeed($max_id)
+    {
         $query  = $this->instagram_api->getUserFeed($max_id);
-        if (!$query && !property_exists($query, 'code') && $query->meta->code == 200) {
-            return $query;
+
+        if (!$query) {
+            return false;
         }
-        return false;
+
+        return $query;
     }
 
     public function getMediaComments()

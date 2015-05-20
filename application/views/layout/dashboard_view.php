@@ -55,8 +55,8 @@
 		$container = 'home-container';
 	} else {
 		$container = 'page-container';
-		if (session('ig_id') != '') {
-			$style = 'style="padding-top:0;margin-top:10px;"';
+        if (session('ig-token') != '')
+            $style = 'style="padding-top:0;margin-top:10px;"';
 			$this->load->view('user/user_self_header');
 		}
 	}

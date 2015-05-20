@@ -69,8 +69,8 @@ class User extends CI_Controller
 
 	public function feed()
 	{
-        $data['meta_title'] = "@". session('ig_username') ."Instagram Photo | Sharetagram";
-        $data['meta_description'] = session('ig_username') ."Instagram Photo feed";
+        $data['meta_title'] = "@". session('ig_username') ." Instagram Photo | Sharetagram";
+        $data['meta_description'] = session('ig_username') ." Instagram Photo feed";
         $data['meta_keywords'] = "Instagram, IG, web, viewer, stats, photo, video, Facebook";
 
         $data['endpoint'] = 'user_self_feed';
