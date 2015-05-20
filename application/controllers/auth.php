@@ -72,7 +72,7 @@ class Auth extends CI_Controller
 			'ig_avatar' => '',
 			'ig_id' => '',
 			'user_id' => '',
-            'url_before_login'
+            'url_before_login' => ''
 		];
 
 		$this->session->unset_userdata($array_items);
