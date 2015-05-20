@@ -45,6 +45,7 @@
                 </ul>
                 <div class="morebox" >
                     <div ng-show='media.busy'><i id="loading" class="fa fa-spinner fa-spin fa-2x"></i></div>
+                    <div ng-show="media.more_btn"><button class="btn btn-default">Load More</button></div>
                 </div>
             </div>
         </div>

@@ -52,6 +52,7 @@ app.factory('Media', function($http) {
         this.max_id = '';
         this.count = 0;
         this.view_user = false;
+        this.more_btn = false; 
     };
 
     Media.prototype.nextPage = function() {
