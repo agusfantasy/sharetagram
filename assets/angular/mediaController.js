@@ -72,6 +72,7 @@ app.factory('Media', function($http) {
                 this.more_btn = true;                  
                 this.busy = false; 
             } else {
+                this.more_btn = false; 
                 this.view_user = data.view_user;
                 var items = data.data;
                 for (var i = 0; i < items.length; i++) {
