@@ -73,9 +73,9 @@ class Media extends CI_Controller
 
     private function isLiked($media_id)
     {
-        if (empty(session('ig-token'))) return false;
+        if (empty(session('ig_token'))) return false;
 
-        $liked = $this->instagram->isLiked(session('ig-id'), $media_id);
+        $liked = $this->instagram->isLiked(session('ig_id'), $media_id);
         if (!$liked) {
             return false;
         }

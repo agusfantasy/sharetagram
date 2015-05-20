@@ -55,7 +55,7 @@
 		$container = 'home-container';
 	} else {
 		$container = 'page-container';
-        if (session('ig-token') != '') {
+        if (session('ig_token') != '') {
             $style = 'style="padding-top:0;margin-top:10px;"';
 			$this->load->view('user/user_self_header');
 		}
