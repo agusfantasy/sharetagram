@@ -59,165 +59,38 @@ class User extends CI_Controller
         $data['meta_description'] = "{$user->data->full_name} Instagram Photo feed";
         $data['meta_keywords'] = "Instagram, IG, web, viewer, stats, photo, video, Facebook";
 
+        $data['endpoint'] = 'user_recent';
+        $data['param'] = $id;
+
         $data['content'] = 'user/user';
         $this->load->view('layout/dashboard_view', $data);
 
     }
 
-    public function recent($user_id)
-    {
-        $max_id = get('max_id');
-
-        $query = $this->instagram->getUserRecent($user_id, $max_id);
-
-        if (!$query) {
-            $response['alert'] = 'fail';
-        } else {
-			if (property_exists($query ,'code')) {
-				if ($query->code === 429) {
-					$response['alert'] = 'limit';
-				} elseif ($query->code === 400) {
-                    $response['alert'] = 'retry';
-                }
-			} else {
-                $response['alert'] = 'success';
-                $response['code'] = $query->meta->code;
-				$response['self_id'] = session('ig_id'); 
-				
-                $response['max_id'] = '';
-                if (property_exists($query->pagination,'next_max_id')) {
-                    $response['max_id'] =  $query->pagination->next_max_id;
-                }
-
-                $response['data'] = '';
-                if (!empty($query->data)) {
-
-                    $response['count_per_load'] = count($query->data);
-
-                    foreach ($query->data as $k => $row) {
-                        $obj = new stdClass();
-                        $obj->id = $row->id;
-                        $obj->type = $row->type;
-
-                        if ($obj->type == 'video') {
-                            $obj->has_video = 'block';
-                        } else {
-                            $obj->has_video = 'none';
-                        }
-
-                        $obj->user_id = $row->user->id;
-                        $obj->user_name = substr($row->user->username, 0, 21);
-                        $obj->image = $row->images->thumbnail->url;
-                        $obj->created_time = humanTiming($row->created_time);
-                        $obj->likes_count = $row->likes->count;
-                        $obj->comments_count = $row->comments->count;
-                        $obj->liked = $this->instagram->isLiked(session('ig_id'), $row->id);						
-                        $obj->like_class = '';
-                        if ($obj->liked) {
-                            $obj->like_class = 'liked';
-                        }
-
-                        $result[] = $obj;
-                    }
-                    $response['data'] = $result;
-                }
-            }
-        }
-
-        echo json_encode($response);
-    }
-
-    public function followers($user_id)
-    {
-        $query = $this->instagram->getFollowers($user_id, get('next_cursor'));
-		
-		if (property_exists($query ,'code')) {
-			if ($query->code === 429) {
-				$response['alert'] = 'limit';
-			}
-		} else {
-			$response['next_cursor'] = '';
-			if (property_exists($query->pagination,'next_cursor')) {
-				$response['next_cursor'] =  $query->pagination->next_cursor;
-			}
-
-			$response['count_per_load'] = count($query->data);
-			$response['data'] = $query->data;
-		}
-
-        echo json_encode($response);
-    }
-
-    public function followings($user_id)
-    {
-        $query = $this->instagram->getFollowings($user_id, get('next_cursor'));
-		
-		if (property_exists($query ,'code')) {
-			if ($query->code === 429) {
-				$response['alert'] = 'limit';
-			}
-		} else {
-			$response['next_cursor'] = '';
-			if (property_exists($query->pagination,'next_cursor')) {
-				$response['next_cursor'] =  $query->pagination->next_cursor;
-			}
-
-			$response['count_per_load'] = count($query->data);
-			$response['data'] = $query->data;
-		}
-
-        echo json_encode($response);
-    }
-
-	public function feed($max_id)
+	public function feed()
 	{
-		$feed = $this->instagram->getUserFeed($max_id);
-
-        $data['meta_title'] = "@{session('ig-username')} - {session('ig-fullname')} Instagram Photo | Sharetagram";
-        $data['meta_description'] = "{session('ig-fullname')} Instagram Photo feed";
+        $data['meta_title'] = "@". session('ig_username') ."Instagram Photo | Sharetagram";
+        $data['meta_description'] = session('ig_username') ."Instagram Photo feed";
         $data['meta_keywords'] = "Instagram, IG, web, viewer, stats, photo, video, Facebook";
+
+        $data['endpoint'] = 'user_self_feed';
+
+        $data['content'] = 'view_media';
+        $this->load->view('layout/dashboard_view', $data);
 	}
-	
-	public function my_likes($max_like_id)
+
+    public function liked()
     {
-		$query = $this->instagram->userMediaLiked($max_like_id);
+        $data['meta_title'] = "Liked Media | Sharetagram";
+        $data['meta_description'] = "Browse All Instagram on the web, like, comment, follow and much more in Sharetagram.com";
+        $data['meta_keywords'] = "Instagram, IG, web, viewer, stats, photo, video, Facebook";
 
-        if (!$query) {
-            $response['alert'] = 'fail';
-        } else {
-            if ($query ===  429) {
-                $response['alert'] = $query;
-            } else {
-                $response['alert'] = 'success';
-                $response['code'] = $query->meta->code;
-                $response['pagination'] =  $query->pagination;
+        $data['endpoint'] = 'user_self_liked';
+        $data['param'] = session('ig_id');
 
-                foreach ($query->data as $k => $row) {
-                    $obj = new stdClass();
-                    $obj->id = $row->id;
-                    $obj->type = $row->type;
-
-                    if ($obj->type == 'video') {
-                        $obj->has_video =  'block';
-                    } else {
-                        $obj->has_video = 'none';
-                    }
-
-                    $obj->user_id = $row->user->id;
-                    $obj->user_name = substr($row->user->username,0,21);
-                    $obj->image = $row->images->thumbnail->url;
-                    $obj->created_time = humanTiming($row->created_time);
-                    $obj->likes_count = $row->likes->count;
-                    $obj->comments_count = $row->comments->count;
-
-                    $result[] = $obj;
-                }
-                $response['data'] = $result;
-            }
-        }
-
-        echo json_encode($response);
-	}
+        $data['content'] = 'view_media';
+        $this->load->view('layout/dashboard_view', $data);
+    }
 
 	public function postFollow()
 	{		

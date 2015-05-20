@@ -27,6 +27,16 @@ class Instagram_model extends CI_Model
         return false;
     }
 
+    public function login()
+    {
+        return $this->instagram_api->instagramLogin();
+    }
+
+    public function auth($code)
+    {
+        return $this->instagram_api->authorize($code);
+    }
+
     /**
      * @return bool | mixed object
      */

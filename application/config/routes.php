@@ -49,15 +49,11 @@ $route['home'] = "site/home";
 
 // routes for popular
 $route['popular'] = "popular/index";
-$route['popular/more'] = "popular/more";
+$route['tag/(:any)'] = "tag/index/$1";
 
 // routes for search
 $route['search/(:any)'] = "search/q/$1";
 $route['search'] = "search/index";
-
-// routes for tag
-$route['tag_more/(:any)'] = "tag/more/$1";
-$route['tag/(:any)'] = "tag/index/$1";
 
 //routes for item
 $route['m/(:any)'] = "item/index/$1";
@@ -67,10 +63,12 @@ $route['comments_media/(:any)'] = "item/comments/$1";
 // routes for user
 $route['user/(:num)/(:any)'] = "user/index/$1/$2";
 $route['user/recent/(:num)'] = "user/recent/$1";
-$route['followers/(:num)'] = "user/followers/$1";
-$route['followings/(:num)'] = "user/followings/$1";
+
+$route['my_followers'] = "user/followers";
+$route['my_followings'] = "user/followings";
 $route['feed'] = "user/feed";
-$route['my_likes'] = "user/my_likes";
+$route['my_likes'] = "user/liked";
+
 $route['user/private'] = 'user/accountPrivate';
 $route['post_follow'] = 'user/postFollow';
 
@@ -84,7 +82,10 @@ $route['contact'] = "info/contact";
 $route['contact_post'] = "info/contact_post";
 
 // routes for media
-$route['media'] = "media/index";
+$route['media'] = "media";
+
+// routes for user Collection
+$route['user_collection'] = "userCollection";
 
 // routes for admin
 $route['admin'] = "admin/ig/index";
