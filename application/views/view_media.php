@@ -8,7 +8,7 @@
     <div infinite-scroll='media.nextPage()' infinite-scroll-disabled='media.busy' infinite-scroll-distance='1'>
 
         <div class="row">
-            <div class="thumb-cont <?php echo (ur(1)=='user') ? 'follow': '' ?>">
+            <div class="thumb-cont <?php echo (ur(1)=='user' || ur(1)=='tag') ? 'follow':'' ?>">
                 <ul class="row list-inline" id="tagsul">
                     <li ng-repeat="item in media.items">
                         <div class="wrapper">

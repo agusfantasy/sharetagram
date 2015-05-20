@@ -56,16 +56,15 @@ class Media extends CI_Controller
             $response['code'] = $query->code;
         } else {
             $response['code'] = $query->meta->code;
+            $response['view_user'] = $view_user;
+
+            $response['max_id'] = "";
+            if (isset($query->pagination) && property_exists($query->pagination,'next_max_id')) {
+                $response['max_id'] =  $query->pagination->next_max_id;
+            }
+
+            $response['data'] = $this->collection($query->data);
         }
-
-        $response['view_user'] = $view_user;
-
-        $response['max_id'] = "";
-        if (isset($query->pagination) && property_exists($query->pagination,'next_max_id')) {
-            $response['max_id'] =  $query->pagination->next_max_id;
-        }
-
-        $response['data'] = $this->collection($query->data);
 
         return $response;
     }

@@ -67,13 +67,18 @@ app.factory('Media', function($http) {
         var url = "/media?endpoint=" + this.endpoint + "&param=" + this.param + "&max_id=" + this.max_id;
         $http.get(url).
         success(function(data) {
-            this.view_user = data.view_user;
-            var items = data.data;
-            for (var i = 0; i < items.length; i++) {
-                this.items.push(items[i]);
+            if (data.code !== 200) {
+                this.more_btn = true;                  
+                this.busy = false; 
+            } else {
+                this.view_user = data.view_user;
+                var items = data.data;
+                for (var i = 0; i < items.length; i++) {
+                    this.items.push(items[i]);
+                }
+                this.max_id = data.max_id;
+                this.busy = false;
             }
-            this.max_id = data.max_id;
-            this.busy = false;
         }.bind(this)).
         error(function(data, status, headers, config) {            
             // called asynchronously if an error occurs
