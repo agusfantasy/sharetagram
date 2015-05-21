@@ -99,19 +99,23 @@ class Instagram_model extends CI_Model
         return $query;
 	}
 
-	public function isLiked($self_id, $media_id)
+    public function isLiked($self_id, $media_id)
     {
-		$likes = $this->getMediaUserLikes($media_id);
-		$likeIds = [];
-		foreach($likes as $like) {
-			$likeIds[] = $like->id;
-		}
-		
-		if(in_array($self_id, $likeIds)){
-			return true;
-		}
-		return false;
-	}
+        $likes = $this->getMediaUserLikes($media_id);
+        if($likes) {
+            $likeIds = [];
+            foreach($likes as $like) {
+                $likeIds[] = $like->id;
+            }
+
+            if(in_array($self_id, $likeIds)){
+                return true;
+            }
+            return false;
+        }
+
+        return false;
+    }
 	
 	public function getUserSelfLiked($max_like_id)
     {

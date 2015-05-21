@@ -12,11 +12,9 @@ class Auth extends CI_Controller
 	public function login()
     {
 		//save url before login to session for callback after instagram login
- 		if ( get('url') != '' ) {
-            $this->session->unset_userdata('url_before_login');
-            $this->session->set_userdata('url_before_login', get('url'));
-			//redirect( $this->input->get('url') );
-		}
+ 		$this->session->unset_userdata('url_before_login');
+        $this->session->set_userdata('url_before_login', get('url'));
+
 		header("Location:".$this->instagram->login());
 	}
 	
@@ -54,11 +52,10 @@ class Auth extends CI_Controller
 				$q = $this->U->update('ig_id', $auth_response->user->id, $data);
 			}
 
-            if ($this->session->userdata('url_before_login') != '') {
-				$url = $this->session->userdata('url_before_login');
-				redirect($url);
-			}	
-			redirect('feed');
+            if (strpos($this->session->userdata('url_before_login'), site_url())===0) {
+                redirect('feed');
+            }
+            redirect($this->session->userdata('url_before_login'));
 		}
 
 		redirect('auth/login');

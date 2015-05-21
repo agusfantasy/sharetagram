@@ -42,10 +42,10 @@ class Media extends CI_Controller
             $view_user = false;
         } elseif ($endpoint == 'user_self_feed') {
             $query = $this->instagram->getUserFeed($max_id);
-            $view_user = false;
+            $view_user = true;
         } elseif ($endpoint == 'user_self_liked') {
             $query = $this->instagram->getUserSelfLiked($max_id);
-            $view_user = false;
+            $view_user = true;
         }
 
         if (!$query) {
