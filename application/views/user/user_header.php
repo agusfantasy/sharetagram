@@ -12,10 +12,12 @@
 </div>
 
 <div class="user-detail-action col-md-5">
-    <a href="#" id="follow" data-self-id="<?php echo session('ig_id') ?>"
-       data-user-id="<?php echo $user->data->id ?>" data-rel-status="<?php echo $rel_status; ?>" class="btn <?php echo $rel_class ?> btn-large follow">
-         <?php echo $rel_status; ?>
-    </a>
+    <?php if(session('ig_id') !== ur(2)): ?>
+        <a href="#" id="follow" data-self-id="<?php echo session('ig_id') ?>"
+            data-user-id="<?php echo $user->data->id ?>" data-rel-status="<?php echo $rel_status; ?>" class="btn <?php echo $rel_class ?> btn-large follow">
+            <?php echo $rel_status; ?>
+        </a>
+    <?php endif ?>
 
     <a class="btn btn-default" href="<?php echo "/user/{$user->data->id}/{$user->data->username}"; ?>">
         <b> <?php echo $user->data->counts->media; ?> </b> <br> media
