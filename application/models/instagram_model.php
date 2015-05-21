@@ -101,10 +101,6 @@ class Instagram_model extends CI_Model
 
 	public function isLiked($self_id, $media_id)
     {
-		if($self_id=='') {
-			return false;
-		}
-		
 		$likes = $this->getMediaUserLikes($media_id);
 		$likeIds = [];
 		foreach($likes as $like) {
