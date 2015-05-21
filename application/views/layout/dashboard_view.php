@@ -55,10 +55,10 @@
 		$container = 'home-container';
 	} else {
 		$container = 'page-container';
-		/*if (!empty(session('ig_id'))) {
-			$style = 'style="padding-top:0;margin-top:10px;"';
+        if (session('ig_token') != '') {
+            $style = 'style="padding-top:0;margin-top:10px;"';
 			$this->load->view('user/user_self_header');
-		}*/
+		}
 	}
 	?>
 
@@ -88,9 +88,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.14/angular-sanitize.min.js"></script>
 
     <script src="<?php echo asset_path(); ?>angular/myApp.js"></script>
-    <script src="<?php echo asset_path(); ?>angular/userFollowController.js"></script>
-    <script src="<?php echo asset_path(); ?>angular/userRecentController.js"></script>
-    <script src="<?php echo asset_path(); ?>angular/tagController.js"></script>
     <script src="<?php echo asset_path(); ?>angular/itemController.js"></script>
+    <script src="<?php echo asset_path(); ?>angular/mediaController.js"></script>
+    <script src="<?php echo asset_path(); ?>angular/userController.js"></script>
 </body>
 </html>

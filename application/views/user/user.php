@@ -4,8 +4,8 @@
 
 <?php
     if (empty(ur(4))) :
-        $this->load->view('user/user_recent');
+        $this->load->view('view_media');
     elseif (ur(4) == 'followers' || ur(4) == 'followings') :
-        $this->load->view('user/user_follow');
+        $this->load->view('view_user');
     endif;
 ?>

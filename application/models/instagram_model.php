@@ -27,6 +27,16 @@ class Instagram_model extends CI_Model
         return false;
     }
 
+    public function login()
+    {
+        return $this->instagram_api->instagramLogin();
+    }
+
+    public function auth($code)
+    {
+        return $this->instagram_api->authorize($code);
+    }
+
     /**
      * @return bool | mixed object
      */
@@ -89,23 +99,23 @@ class Instagram_model extends CI_Model
         return $query;
 	}
 
-	public function isLiked($self_id, $media_id)
+    public function isLiked($self_id, $media_id)
     {
-		if($self_id=='') {
-			return false;
-		}
-		
-		$likes = $this->getMediaUserLikes($media_id);
-		$likeIds = [];
-		foreach($likes as $like) {
-			$likeIds[] = $like->id;
-		}
-		
-		if(in_array($self_id, $likeIds)){
-			return true;
-		}
-		return false;
-	}
+        $likes = $this->getMediaUserLikes($media_id);
+        if($likes) {
+            $likeIds = [];
+            foreach($likes as $like) {
+                $likeIds[] = $like->id;
+            }
+
+            if(in_array($self_id, $likeIds)){
+                return true;
+            }
+            return false;
+        }
+
+        return false;
+    }
 	
 	public function getUserSelfLiked($max_like_id)
     {
@@ -183,12 +193,15 @@ class Instagram_model extends CI_Model
 		return $query;       
     }
 
-    public function getUserFeed($max_id) {
+    public function getUserFeed($max_id)
+    {
         $query  = $this->instagram_api->getUserFeed($max_id);
-        if (!$query && !property_exists($query, 'code') && $query->meta->code == 200) {
-            return $query;
+
+        if (!$query) {
+            return false;
         }
-        return false;
+
+        return $query;
     }
 
     public function getMediaComments()

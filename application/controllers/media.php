@@ -6,50 +6,86 @@ class Media extends CI_Controller
     {
         parent::__construct();
 
-        $this->load->model('InstagramModel', 'instagram');
-        if (empty(session('ig-token'))) {
-            $this->instagram->setToken(INSTAGRAM_TOKEN);
+        $this->load->model('instagram_model', 'instagram');
+        $this->load->model('mod_user','user');
+
+        if (empty(session('ig_token'))) {
+            $this->instagram->setToken($this->user->getTokenUsed());
+        } else {
+            $this->instagram->setToken(session('ig_token'));
         }
     }
 
     public function index()
     {
-        $result = $this->getAll(get('endpoint'), get('max_id'), get('user_id'));
-        return json_encode($result);
+        $result = $this->getAll(get('endpoint'), get('param'), get('max_id'));
+        echo json_encode($result);
     }
 
     /*
      * get All
-     *
      * @param String $endpoint
-     * @param String $auth
-     * @param String $max_id
-     * @param String $user_id
-     * @param bool $auth
-     *
+     * @param String $param : [tag_value], [user_id]
+     * @param $max_id : pagination
      * @return mixed
      */
-    public function getAll($endpoint, $max_id = null, $user_id = null, $auth = false)
+    public function getAll($endpoint, $param = null, $max_id = null)
     {
         if ($endpoint == 'popular') {
             $query = $this->instagram->getPopular();
+            $view_user = true;
         } elseif ($endpoint == 'tag') {
-            $query = $this->instagram->getTag($max_id);
+            $query = $this->instagram->getTag($param, $max_id);
+            $view_user = true;
         } elseif ($endpoint == 'user_recent') {
-            $query = $this->instagram->getUserRecent($user_id, $max_id);
+            $query = $this->instagram->getUserRecent($param, $max_id);
+            $view_user = false;
         } elseif ($endpoint == 'user_self_feed') {
             $query = $this->instagram->getUserFeed($max_id);
+            $view_user = true;
         } elseif ($endpoint == 'user_self_liked') {
             $query = $this->instagram->getUserSelfLiked($max_id);
+            $view_user = true;
         }
 
         if (!$query) {
             return false;
         }
 
-        $data['pagination'] =  $query->pagination;
+        if (property_exists($query ,'code')) {
+            $response['code'] = $query->code;
+        } else {
+            $response['code'] = $query->meta->code;
+            $response['self_id'] = session('ig_id');
+            if ($query->meta->code !== 400) {
+                $response['view_user'] = $view_user;
 
-        foreach ($query->data as $k => $row) {
+                $response['max_id'] = "";
+                if (isset($query->pagination) && property_exists($query->pagination,'next_max_id')) {
+                    $response['max_id'] =  $query->pagination->next_max_id;
+                }
+
+                $response['data'] = $this->collection($query->data);
+            }
+        }
+
+        return $response;
+    }
+
+    private function isLiked($media_id)
+    {
+        if (empty(session('ig_token'))) return false;
+
+        $liked = $this->instagram->isLiked(session('ig_id'), $media_id);
+        if (!$liked) {
+            return false;
+        }
+        return true;
+    }
+
+    private function collection($data)
+    {
+        foreach ($data as $k => $row) {
             $obj = new stdClass();
             $obj->id = $row->id;
             $obj->type = $row->type;
@@ -67,26 +103,13 @@ class Media extends CI_Controller
             $obj->likes_count = $row->likes->count;
             $obj->comments_count = $row->comments->count;
             $obj->liked = $this->isLiked($row->id);
+
             if ($obj->liked) {
                 $obj->like_colour = 'color:#c12e2a';
             }
 
             $result[] = $obj;
         }
-
-        $data['data'] = $result;
-
-        return $data;
-    }
-
-    private function isLiked($media_id)
-    {
-        if (empty(session('ig-token'))) return false;
-
-        $liked = $this->instagram->isLiked(session('ig-id'), $media_id);
-        if (!$liked) {
-            return false;
-        }
-        return true;
+        return $result;
     }
 }
