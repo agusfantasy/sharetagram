@@ -54,7 +54,7 @@
 						</a>
 						<ul class="dropdown-menu" role="menu">
 							<li><a href="<?php echo "/user/$user_id/$user_name" ?>" >My Profile</a></li>
-							<li><a href="<?php echo "/auth/logout/?url={current_url()}" ?>">Logout</a></li>
+							<li><a href="<?php echo "/auth/logout/?url=". current_url() ?>">Logout</a></li>
 						</ul>
 					</li>
 				</ul>
