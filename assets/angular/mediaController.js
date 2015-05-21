@@ -1,11 +1,11 @@
-app.controller("mediaController", function($scope, Media) {
+app.controller("mediaController", function($scope, Media, $http) {
     $scope.media = new Media();
-    $scope.like = function($http){
+    $scope.like = function(){
 
         var id = this.$index;
         var recentItem = $scope.media.items[id];
 
-        if (!recentItem.selfId) {
+        if ($scope.media.self_id == '') {
             alert('Please Sign in with Instagram!');
         } else {
             var action = '';
@@ -13,11 +13,13 @@ app.controller("mediaController", function($scope, Media) {
                 action = 'like';
                 recentItem.liked = true;
                 recentItem.like_class = 'liked';
+                recentItem.like_colour = 'color:#c12e2a';
                 recentItem.likes_count = parseInt(recentItem.likes_count, 10) + 1;
             } else {
                 action = 'unlike';
                 recentItem.liked = false;
                 recentItem.like_class = '';
+                recentItem.like_colour = '';
                 recentItem.likes_count = parseInt(recentItem.likes_count, 10) - 1;
             }
 
@@ -31,11 +33,13 @@ app.controller("mediaController", function($scope, Media) {
                         action = 'unlike';
                         recentItem.liked = false;
                         recentItem.like_class = '';
+                        recentItem.like_colour = '';
                         recentItem.likes_count = parseInt(recentItem.likes_count, 10) - 1;
                     } else {
                         action = 'like';
                         recentItem.liked = true;
                         recentItem.like_class = 'liked';
+                        recentItem.like_colour = 'color:#c12e2a';
                         recentItem.likes_count = parseInt(recentItem.likes_count, 10) + 1;
                     }
                 });

@@ -32,7 +32,7 @@
                                 <div class="photo-time">{{ item.created_time }}</div>
                                 <div class="like-comment">
                                     <i  ng-click="like()"  id="like" data-media-id="{{ item.id }}"
-                                       data-self-id="<?php echo session('ig-id') ?>" data-isliked="{{ item.liked }}"
+                                       data-self-id="<?php echo session('ig_id') ?>" data-isliked="{{ item.liked }}"
                                        class="fa fa-heart fa-fw" style="{{ item.like_colour }}"></i>
                                     {{ item.likes_count }}
                                     <i class="fa fa-comment fa-fw"></i> {{ item.comments_count }}

@@ -56,6 +56,7 @@ class Media extends CI_Controller
             $response['code'] = $query->code;
         } else {
             $response['code'] = $query->meta->code;
+            $response['self_id'] = session('ig_id');
             if ($query->meta->code !== 400) {
                 $response['view_user'] = $view_user;
 
