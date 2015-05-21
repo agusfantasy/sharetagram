@@ -53,8 +53,8 @@
 							<img width="50" height="auto" alt="" src="<?php echo session('ig_avatar'); ?>"> 
 						</a>
 						<ul class="dropdown-menu" role="menu">
-							<!--<li><a href="<?php echo site_url("user/$user_id/$user_name") ?>">View Profile</a></li>-->
-							<li><a href="<?php echo site_url("auth/logout/?url=" . current_url()) ?>">Logout</a></li>
+							<li><a href="<?php echo "/user/$user_id/$user_name" ?>" >My Profile</a></li>
+							<li><a href="<?php echo "/auth/logout/?url={current_url()}" ?>">Logout</a></li>
 						</ul>
 					</li>
 				</ul>
