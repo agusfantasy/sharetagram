@@ -49,6 +49,8 @@
 <body>
 	<header><?php $this->load->view('layout/header_view');?></header>
 
+	<div style="display:none" id="ig_id"><?php echo session('ig_id') ?></div>
+
 	<?php
 	$style = '';
 	if (empty(ur(1))) {

@@ -5,7 +5,7 @@ app.controller("mediaController", function($scope, Media, $http) {
         var id = this.$index;
         var recentItem = $scope.media.items[id];
 
-        if ($scope.media.self_id == '') {
+        if ($('#ig_id').text() == '') {
             alert('Please Sign in with Instagram!');
         } else {
             var action = '';
